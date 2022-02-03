@@ -116,14 +116,21 @@ public class Opmode_inicial extends LinearOpMode {
             motorFrontRight.setPower(frontRightPower);
             motorBackRight.setPower(backRightPower);
 
-            PosY = PosY + gamepad2.right_stick_y;
-            PosX = PosX + gamepad2.right_stick_x;
+            PosY = PosY + gamepad2.right_stick_y * -0.001;
+            PosX = PosX + gamepad2.right_stick_x * 0.001;
 
-            if (PosY > 0.1){
+            if (PosY > 0.5){
+                PosY = 0.5;
+            }
+            if (PosY < 0.1){
                 PosY = 0.1;
             }
-            if (PosY < -0.1){
-                PosY = -0.1;
+
+            if (PosX > 0.5) {
+                PosX = 0.5;
+            }
+            if (PosX < 0.1) {
+                PosX = 0.1;
             }
 
             braco.setPos(PosX, PosY);
@@ -132,9 +139,12 @@ public class Opmode_inicial extends LinearOpMode {
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-
+            telemetry.addData("Angulo Ma", Math.toDegrees(braco.getMa()));
+            telemetry.addData("Angulo C", Math.toDegrees(braco.getC()));
+            telemetry.addData("Posição X2", PosX);
+            telemetry.addData("Posição Y2", PosY);
+            telemetry.addData("Hipotenusa", braco.getc());
             telemetry.update();
-
         }
     }
 }
