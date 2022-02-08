@@ -92,29 +92,35 @@ public class Opmode_inicial extends LinearOpMode {
         runtime.reset();
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            if (gamepad1.b==true) {
+            if (gamepad1.b == true) {
                 Carrossel.setVelocity(-2500);
-            }else{
+            } else {
                 Carrossel.setVelocity(0);
             }
             double velocity = gamepad1.right_trigger;
-            double y = gamepad1.left_stick_y*velocity;
-            double x = gamepad1.left_stick_x*-1.1*velocity;
-            double rx = -gamepad1.right_stick_x*velocity;
+            double y = gamepad1.left_stick_y * velocity;
+            double x = gamepad1.left_stick_x * -1.1 * velocity;
+            double rx = -gamepad1.right_stick_x * velocity;
 
             double y2 = gamepad2.right_stick_y;
             double x2 = gamepad2.right_stick_x;
 
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double frontLeftPower = (y+x+rx) / denominator;
-            double backLeftPower = (y-x+rx) / denominator;
-            double frontRightPower = (y-x-rx) / denominator;
-            double backRightPower = (y+x-rx) / denominator;
+            double frontLeftPower = (y + x + rx) / denominator;
+            double backLeftPower = (y - x + rx) / denominator;
+            double frontRightPower = (y - x - rx) / denominator;
+            double backRightPower = (y + x - rx) / denominator;
 
             motorFrontLeft.setPower(frontLeftPower);
             motorBackLeft.setPower(backLeftPower);
             motorFrontRight.setPower(frontRightPower);
             motorBackRight.setPower(backRightPower);
+
+            motorOmbro.setPower(0,5);
+            if (botão.getState() == true) {
+                motorOmbro.setPower(0);
+                motorOmbro.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
 
             PosY = PosY + gamepad2.right_stick_y * -0.001;
             PosX = PosX + gamepad2.right_stick_x * 0.001;
