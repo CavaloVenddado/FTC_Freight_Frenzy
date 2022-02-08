@@ -119,15 +119,15 @@ public class Opmode_inicial extends LinearOpMode {
             PosY = PosY + gamepad2.right_stick_y * -0.001;
             PosX = PosX + gamepad2.right_stick_x * 0.001;
 
-            if (PosY > 0.5){
-                PosY = 0.5;
+            if (PosY > 0.263113814){
+                PosY = 0.263113814;
             }
             if (PosY < 0.1){
                 PosY = 0.1;
             }
 
-            if (PosX > 0.5) {
-                PosX = 0.5;
+            if (PosX > 0.147911229) {
+                PosX = 0.147911229;
             }
             if (PosX < 0.1) {
                 PosX = 0.1;
