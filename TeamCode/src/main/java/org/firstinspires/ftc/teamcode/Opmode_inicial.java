@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -50,22 +51,25 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Linear OpMode", group="Linear Opmode")
+@TeleOp(name="Opmode_Inicial", group="Linear Opmode")
 public class Opmode_inicial extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotorEx Carrossel = null;
-    private DcMotor motorFrontLeft = null;
-    private DcMotor motorBackLeft = null;
-    private DcMotor motorFrontRight = null;
-    private DcMotor motorBackRight = null;
-    private DcMotor motorOmbro = null;
-    private DcMotor motorCotovelo = null;
-    private Servo   servoPulso = null;
-    private Servo   servoGarra = null;
+    private DcMotorEx motorFrontLeft = null;
+    private DcMotorEx motorBackLeft = null;
+    private DcMotorEx motorFrontRight = null;
+    private DcMotorEx motorBackRight = null;
+    private DcMotorEx motorOmbro = null;
+    private DcMotorEx motorCotovelo = null;
+    private Servo servoPulso = null;
+    private Servo servoGarra = null;
     private double PosY;
     private double PosX;
+    private DigitalChannel botao1ombro;
+    private DigitalChannel botao2cotovelo;
+
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -81,6 +85,18 @@ public class Opmode_inicial extends LinearOpMode {
         motorFrontRight = hardwareMap.get(DcMotorEx.class,"motorFrontRight");
         motorBackRight = hardwareMap.get(DcMotorEx.class,"motorBackRight");
 
+        botao1ombro = hardwareMap.get(DigitalChannel.class, "Botao1Ombro");
+        botao2cotovelo = hardwareMap.get(DigitalChannel.class, "Botao2Cotovelo");
+        botao1ombro.setMode(DigitalChannel.Mode.INPUT);
+        botao2cotovelo.setMode(DigitalChannel.Mode.INPUT);
+
+        motorCotovelo =hardwareMap.get(DcMotorEx.class,"Cotovelo");
+        motorOmbro = hardwareMap.get(DcMotorEx.class,"Ombro");
+        motorCotovelo.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorOmbro.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        servoPulso = hardwareMap.get(Servo.class,"ServoPunho");
+        servoGarra = hardwareMap.get(Servo.class,"ServoGarra");
+
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         Carrossel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -88,9 +104,31 @@ public class Opmode_inicial extends LinearOpMode {
         motorFrontRight.setDirection(DcMotorEx.Direction.REVERSE);
         // Wait for the game to start (driver presses PLAY)
         Robotic_Arm braco = new Robotic_Arm();
+
         waitForStart();
         runtime.reset();
         // run until the end of the match (driver presses STOP)
+
+        motorOmbro.setPower(0.5);    //Código para alçancar o ponto 0 do ombro
+        while (botao1ombro.getState() == false && opModeIsActive()) {
+
+        }
+        motorOmbro.setPower(0);
+        motorOmbro.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorOmbro.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorOmbro.setVelocity(0);
+        motorOmbro.setTargetPosition(0);
+
+        motorCotovelo.setPower(0.5);    //Código para alçancar o ponto 0 do cotovelo
+        while (botao2cotovelo.getState() == false && opModeIsActive()) {
+
+        }
+        motorCotovelo.setPower(0);
+        motorCotovelo.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorCotovelo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorCotovelo.setVelocity(0);
+        motorCotovelo.setTargetPosition(0);
+
         while (opModeIsActive()) {
             if (gamepad1.b == true) {
                 Carrossel.setVelocity(-2500);
@@ -116,12 +154,6 @@ public class Opmode_inicial extends LinearOpMode {
             motorFrontRight.setPower(frontRightPower);
             motorBackRight.setPower(backRightPower);
 
-            motorOmbro.setPower(0,5);
-            if (botão.getState() == true) {
-                motorOmbro.setPower(0);
-                motorOmbro.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-
             PosY = PosY + gamepad2.right_stick_y * -0.001;
             PosX = PosX + gamepad2.right_stick_x * 0.001;
 
@@ -145,11 +177,16 @@ public class Opmode_inicial extends LinearOpMode {
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Angulo Ma", Math.toDegrees(braco.getMa()));
-            telemetry.addData("Angulo C", Math.toDegrees(braco.getC()));
-            telemetry.addData("Posição X2", PosX);
-            telemetry.addData("Posição Y2", PosY);
-            telemetry.addData("Hipotenusa", braco.getc());
+            telemetry.addData("Angulo Ma: ", Math.toDegrees(braco.getMa()));
+            telemetry.addData("Angulo C: ", Math.toDegrees(braco.getC()));
+            telemetry.addData("Posição X2: ", PosX);
+            telemetry.addData("Posição Y2: ", PosY);
+            telemetry.addData("Hipotenusa: ", braco.getc());
+
+            telemetry.addData("Botão Ombro: ", botao1ombro.getState());
+            telemetry.addData("Botão Cotovelo: ", botao2cotovelo.getState());
+            telemetry.addData("Posição Motor Ombro: ",motorOmbro.getCurrentPosition());
+            telemetry.addData("Posição Motor Cotovelo: ",motorCotovelo.getCurrentPosition());
             telemetry.update();
         }
     }
