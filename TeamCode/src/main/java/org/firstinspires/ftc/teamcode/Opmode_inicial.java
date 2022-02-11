@@ -69,7 +69,7 @@ public class Opmode_inicial extends LinearOpMode {
     private double PosX;
     private DigitalChannel botao1ombro;
     private DigitalChannel botao2cotovelo;
-
+    private double fatorCotovelo = (-264/ Math.toRadians(180));
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
