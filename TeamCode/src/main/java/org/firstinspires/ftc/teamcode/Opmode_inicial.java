@@ -125,31 +125,6 @@ public class Opmode_inicial extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
 
         /*
-        a partir daqui os motores se dirigirão até os botões para definir o ponto 0 do ombro e
-        cotovelo
-         */
-        motorOmbro.setPower(0.5);    //Código para alçancar o ponto 0 do ombro
-        while (botao1ombro.getState() == false && opModeIsActive()) {
-
-        }
-        motorOmbro.setPower(0);
-        motorOmbro.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorOmbro.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorOmbro.setDirection(DcMotor.Direction.REVERSE);
-        motorOmbro.setVelocity(100);
-        motorOmbro.setTargetPosition(0);
-
-        motorCotovelo.setPower(0.5);    //Código para alçancar o ponto 0 do cotovelo
-        while (botao2cotovelo.getState() == false && opModeIsActive()) {
-
-        }
-        motorCotovelo.setPower(0);
-        motorCotovelo.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorCotovelo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorCotovelo.setVelocity(100);
-        motorCotovelo.setTargetPosition(0);
-
-        /*
         Seguencia de enquanto responsavel por operar o atuador do carrosel
         Se o botão b estiver pressionado, o motor irá girar!
          */
@@ -227,7 +202,6 @@ public class Opmode_inicial extends LinearOpMode {
             telemetry.addData("Botão Cotovelo: ", botao2cotovelo.getState());
             telemetry.addData("Posição Motor Ombro: ",motorOmbro.getCurrentPosition());
             telemetry.addData("Posição Motor Cotovelo: ",motorCotovelo.getCurrentPosition());
-            telemetry
             telemetry.update();
         }
     }
