@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -80,7 +81,6 @@ public class ponto_0 extends LinearOpMode {
         motorOmbro.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         servoPulso = hardwareMap.get(Servo.class,"ServoPunho");
         servoGarra = hardwareMap.get(Servo.class,"ServoGarra");
-
         waitForStart();
         runtime.reset();
 
@@ -111,6 +111,7 @@ public class ponto_0 extends LinearOpMode {
             motorCotovelo.setTargetPosition(0);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
+
             telemetry.update();
         }
     }

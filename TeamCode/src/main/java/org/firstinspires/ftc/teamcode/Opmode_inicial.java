@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -107,8 +108,14 @@ public class Opmode_inicial extends LinearOpMode {
 
         motorCotovelo = hardwareMap.get(DcMotorEx.class,"Cotovelo");
         motorOmbro = hardwareMap.get(DcMotorEx.class,"Ombro");
-        motorCotovelo.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorOmbro.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorOmbro.setTargetPosition(0);
+        motorCotovelo.setTargetPosition(0);
+        motorCotovelo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorOmbro.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorOmbro.setVelocity(2000);
+        motorCotovelo.setVelocity(2000);
+        motorCotovelo.setVelocityPIDFCoefficients(1.26, 0, 0, 12.6);
+        motorOmbro.setVelocityPIDFCoefficients(10.26, 0, 0, 22.6);
         servoPulso = hardwareMap.get(Servo.class,"ServoPunho");
         servoGarra = hardwareMap.get(Servo.class,"ServoGarra");
 
@@ -182,13 +189,19 @@ public class Opmode_inicial extends LinearOpMode {
                 PosX = 0.1;
             }
 
-
             braco.setPos(PosX, PosY);
             // Motores do braço se dirigem para o angolo exato levando em consideração os ajustes
             motorOmbro.setTargetPosition((int)(braco.getMa() * fatorOmbro));
-            motorCotovelo.setTargetPosition((int)(braco.getC()*fatorCotovelo));
+            motorCotovelo.setTargetPosition((int)(braco.getC() * fatorCotovelo));
             // Choose to drive using either Tank Mode, or POV Mode
             // Comment out the method that's not used.  The default below is POV.
+
+            if (gamepad2.right_bumper == true){
+                servoGarra.setPosition(0);
+            }
+            if (gamepad2.left_bumper == true){
+                servoGarra.setPosition(1);
+            }
 
             // Sequencia responsavel por exibir no monitor os valores importantes do codigo.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -202,6 +215,8 @@ public class Opmode_inicial extends LinearOpMode {
             telemetry.addData("Botão Cotovelo: ", botao2cotovelo.getState());
             telemetry.addData("Posição Motor Ombro: ",motorOmbro.getCurrentPosition());
             telemetry.addData("Posição Motor Cotovelo: ",motorCotovelo.getCurrentPosition());
+            telemetry.addData("Target Position Ombro: ", motorOmbro.getTargetPosition());
+            telemetry.addData("Target Position Cotovelo: ", motorCotovelo.getTargetPosition());
             telemetry.update();
         }
     }
