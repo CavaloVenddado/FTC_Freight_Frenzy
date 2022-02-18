@@ -55,6 +55,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Opmode_inicial extends LinearOpMode {
 
     // Declare OpMode members.
+    /*
+    Nesta parte do codigo são declaradas as variaveis dos motores, botões e servos instalados no robo
+     */
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotorEx Carrossel = null;
     private DcMotorEx motorFrontLeft = null;
@@ -69,7 +72,14 @@ public class Opmode_inicial extends LinearOpMode {
     private double PosX;
     private DigitalChannel botao1ombro;
     private DigitalChannel botao2cotovelo;
-    private double fatorCotovelo = (-264/ Math.toRadians(180));
+
+    /*
+    nestas proximas duas linhas foram definidas os fatores do cotovelo e do ombro
+    responsaveis por transformar os valores do motores do ombro e cotovelo em radianos,
+    respectivamente
+     */
+    private double fatorCotovelo = (-264/ Math.toRadians(180)); //-264 = 180°
+    private double fatorOmbro = (5600 / Math.toRadians(180)); //5600 = 180°
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -79,6 +89,11 @@ public class Opmode_inicial extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
+        /*
+        em seguida é criado o hardwaremap/mapa de hardware cujo o objetivo é nomear os motores,
+        botões e servos.
+        é também definido os modos em que servos e motores vão operar
+        */
         Carrossel = hardwareMap.get(DcMotorEx.class, "Carrossel");
         motorFrontLeft = hardwareMap.get(DcMotorEx.class,"motorFrontLeft");
         motorBackLeft = hardwareMap.get(DcMotorEx.class,"motorBackLeft");
@@ -90,7 +105,7 @@ public class Opmode_inicial extends LinearOpMode {
         botao1ombro.setMode(DigitalChannel.Mode.INPUT);
         botao2cotovelo.setMode(DigitalChannel.Mode.INPUT);
 
-        motorCotovelo =hardwareMap.get(DcMotorEx.class,"Cotovelo");
+        motorCotovelo = hardwareMap.get(DcMotorEx.class,"Cotovelo");
         motorOmbro = hardwareMap.get(DcMotorEx.class,"Ombro");
         motorCotovelo.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorOmbro.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -104,11 +119,15 @@ public class Opmode_inicial extends LinearOpMode {
         motorFrontRight.setDirection(DcMotorEx.Direction.REVERSE);
         // Wait for the game to start (driver presses PLAY)
         Robotic_Arm braco = new Robotic_Arm();
-
+        //a partir daqui o codigo é iniciado no celular
         waitForStart();
         runtime.reset();
         // run until the end of the match (driver presses STOP)
 
+        /*
+        a partir daqui os motores se dirigirão até os botões para definir o ponto 0 do ombro e
+        cotovelo
+         */
         motorOmbro.setPower(0.5);    //Código para alçancar o ponto 0 do ombro
         while (botao1ombro.getState() == false && opModeIsActive()) {
 
@@ -116,7 +135,8 @@ public class Opmode_inicial extends LinearOpMode {
         motorOmbro.setPower(0);
         motorOmbro.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorOmbro.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorOmbro.setVelocity(0);
+        motorOmbro.setDirection(DcMotor.Direction.REVERSE);
+        motorOmbro.setVelocity(100);
         motorOmbro.setTargetPosition(0);
 
         motorCotovelo.setPower(0.5);    //Código para alçancar o ponto 0 do cotovelo
@@ -126,23 +146,36 @@ public class Opmode_inicial extends LinearOpMode {
         motorCotovelo.setPower(0);
         motorCotovelo.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorCotovelo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorCotovelo.setVelocity(0);
+        motorCotovelo.setVelocity(100);
         motorCotovelo.setTargetPosition(0);
 
+        /*
+        Seguencia de enquanto responsavel por operar o atuador do carrosel
+        Se o botão b estiver pressionado, o motor irá girar!
+         */
         while (opModeIsActive()) {
             if (gamepad1.b == true) {
                 Carrossel.setVelocity(-2500);
             } else {
                 Carrossel.setVelocity(0);
             }
+            /*
+            Declaração de variaveis referentes à movimentoção das rodas.
+             */
             double velocity = gamepad1.right_trigger;
             double y = gamepad1.left_stick_y * velocity;
             double x = gamepad1.left_stick_x * -1.1 * velocity;
             double rx = -gamepad1.right_stick_x * velocity;
 
+            /*
+            Declaração de variaveis referentes a posição do braço
+             */
             double y2 = gamepad2.right_stick_y;
             double x2 = gamepad2.right_stick_x;
 
+            /*
+            Codigo responsavel pela movimentação do robô
+             */
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
             double frontLeftPower = (y + x + rx) / denominator;
             double backLeftPower = (y - x + rx) / denominator;
@@ -157,6 +190,9 @@ public class Opmode_inicial extends LinearOpMode {
             PosY = PosY + gamepad2.right_stick_y * -0.001;
             PosX = PosX + gamepad2.right_stick_x * 0.001;
 
+            /*
+            Essa sequencia de if é encarregada de definir o alcance maximo do braço
+             */
             if (PosY > 0.263113814){
                 PosY = 0.263113814;
             }
@@ -171,11 +207,15 @@ public class Opmode_inicial extends LinearOpMode {
                 PosX = 0.1;
             }
 
+
             braco.setPos(PosX, PosY);
+            // Motores do braço se dirigem para o angolo exato levando em consideração os ajustes
+            motorOmbro.setTargetPosition((int)(braco.getMa() * fatorOmbro));
+            motorCotovelo.setTargetPosition((int)(braco.getC()*fatorCotovelo));
             // Choose to drive using either Tank Mode, or POV Mode
             // Comment out the method that's not used.  The default below is POV.
 
-            // Show the elapsed game time and wheel power.
+            // Sequencia responsavel por exibir no monitor os valores importantes do codigo.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Angulo Ma: ", Math.toDegrees(braco.getMa()));
             telemetry.addData("Angulo C: ", Math.toDegrees(braco.getC()));
@@ -187,6 +227,7 @@ public class Opmode_inicial extends LinearOpMode {
             telemetry.addData("Botão Cotovelo: ", botao2cotovelo.getState());
             telemetry.addData("Posição Motor Ombro: ",motorOmbro.getCurrentPosition());
             telemetry.addData("Posição Motor Cotovelo: ",motorCotovelo.getCurrentPosition());
+            telemetry
             telemetry.update();
         }
     }
