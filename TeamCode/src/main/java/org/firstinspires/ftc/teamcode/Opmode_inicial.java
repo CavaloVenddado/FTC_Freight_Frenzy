@@ -114,7 +114,7 @@ public class Opmode_inicial extends LinearOpMode {
         motorOmbro.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorOmbro.setVelocity(2000);
         motorCotovelo.setVelocity(2000);
-        motorCotovelo.setVelocityPIDFCoefficients(1.26, 0, 0, 12.6);
+        motorCotovelo.setVelocityPIDFCoefficients(10.70, 0, 0, 13.6);
         motorOmbro.setVelocityPIDFCoefficients(10.26, 0, 0, 22.6);
         servoPulso = hardwareMap.get(Servo.class,"ServoPunho");
         servoGarra = hardwareMap.get(Servo.class,"ServoGarra");
