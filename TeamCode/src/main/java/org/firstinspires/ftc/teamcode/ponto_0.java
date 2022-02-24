@@ -81,38 +81,39 @@ public class ponto_0 extends LinearOpMode {
         motorOmbro.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         servoPulso = hardwareMap.get(Servo.class,"ServoPunho");
         servoGarra = hardwareMap.get(Servo.class,"ServoGarra");
+
+        //espera o play ser ativado
         waitForStart();
         runtime.reset();
 
-        while (opModeIsActive()) {
             /*
         a partir daqui os motores se dirigirão até os botões para definir o ponto 0 do ombro e
         cotovelo
          */
-            motorOmbro.setPower(0.5);    //Código para alçancar o ponto 0 do ombro
-            while (botao1ombro.getState() == false && opModeIsActive()) {
 
-            }
-            motorOmbro.setPower(0);
-            motorOmbro.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            motorOmbro.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorOmbro.setDirection(DcMotor.Direction.REVERSE);
-            motorOmbro.setVelocity(100);
-            motorOmbro.setTargetPosition(0);
+        motorOmbro.setPower(0.3);    //Código para alçancar o ponto 0 do ombro
+        while (botao1ombro.getState() == false && opModeIsActive()) {
 
-            motorCotovelo.setPower(0.5);    //Código para alçancar o ponto 0 do cotovelo
-            while (botao2cotovelo.getState() == false && opModeIsActive()) {
-
-            }
-            motorCotovelo.setPower(0);
-            motorCotovelo.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            motorCotovelo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorCotovelo.setVelocity(100);
-            motorCotovelo.setTargetPosition(0);
-
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-
-            telemetry.update();
         }
+        motorOmbro.setPower(0);
+        motorOmbro.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorOmbro.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorOmbro.setDirection(DcMotor.Direction.REVERSE);
+        motorOmbro.setVelocity(100);
+        motorOmbro.setTargetPosition(0);
+
+        motorCotovelo.setPower(0.5);    //Código para alçancar o ponto 0 do cotovelo
+        while (botao2cotovelo.getState() == false && opModeIsActive()) {
+
+        }
+        motorCotovelo.setPower(0);
+        motorCotovelo.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorCotovelo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorCotovelo.setVelocity(100);
+        motorCotovelo.setTargetPosition(0);
+
+        telemetry.addData("Status", "Run Time: " + runtime.toString());
+
+        telemetry.update();
     }
 }

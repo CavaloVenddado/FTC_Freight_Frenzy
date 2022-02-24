@@ -112,9 +112,9 @@ public class Opmode_inicial extends LinearOpMode {
         motorCotovelo.setTargetPosition(0);
         motorCotovelo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorOmbro.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorOmbro.setVelocity(2000);
-        motorCotovelo.setVelocity(2000);
-        motorCotovelo.setVelocityPIDFCoefficients(10.70, 0, 0, 13.6);
+        motorOmbro.setVelocity(200);
+        motorCotovelo.setVelocity(500);
+        motorCotovelo.setVelocityPIDFCoefficients(26.00, 0, 2, 13.6);
         motorOmbro.setVelocityPIDFCoefficients(10.26, 0, 0, 22.6);
         servoPulso = hardwareMap.get(Servo.class,"ServoPunho");
         servoGarra = hardwareMap.get(Servo.class,"ServoGarra");
@@ -175,15 +175,15 @@ public class Opmode_inicial extends LinearOpMode {
             /*
             Essa sequencia de if é encarregada de definir o alcance maximo do braço
              */
-            if (PosY > 0.263113814){
-                PosY = 0.263113814;
+            if (PosY > 0.45){
+                PosY = 0.45;
             }
             if (PosY < 0.1){
                 PosY = 0.1;
             }
 
-            if (PosX > 0.147911229) {
-                PosX = 0.147911229;
+            if (PosX > 0.45) {
+                PosX = 0.45;
             }
             if (PosX < 0.1) {
                 PosX = 0.1;
