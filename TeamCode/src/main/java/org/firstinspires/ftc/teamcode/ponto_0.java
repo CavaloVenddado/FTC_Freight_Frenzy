@@ -91,7 +91,7 @@ public class ponto_0 extends LinearOpMode {
         cotovelo
          */
 
-        motorOmbro.setPower(0.3);    //Código para alçancar o ponto 0 do ombro
+        motorOmbro.setPower(0.2);    //Código para alçancar o ponto 0 do ombro
         while (botao1ombro.getState() == false && opModeIsActive()) {
 
         }
@@ -102,7 +102,7 @@ public class ponto_0 extends LinearOpMode {
         motorOmbro.setVelocity(100);
         motorOmbro.setTargetPosition(0);
 
-        motorCotovelo.setPower(0.5);    //Código para alçancar o ponto 0 do cotovelo
+        motorCotovelo.setPower(0.3);    //Código para alçancar o ponto 0 do cotovelo
         while (botao2cotovelo.getState() == false && opModeIsActive()) {
 
         }

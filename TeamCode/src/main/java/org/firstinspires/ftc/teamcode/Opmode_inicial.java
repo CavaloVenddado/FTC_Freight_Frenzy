@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -112,10 +113,10 @@ public class Opmode_inicial extends LinearOpMode {
         motorCotovelo.setTargetPosition(0);
         motorCotovelo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorOmbro.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorOmbro.setVelocity(200);
+        motorOmbro.setVelocity(600);
         motorCotovelo.setVelocity(500);
         motorCotovelo.setVelocityPIDFCoefficients(26.00, 0, 2, 13.6);
-        motorOmbro.setVelocityPIDFCoefficients(10.26, 0, 0, 22.6);
+        motorOmbro.setVelocityPIDFCoefficients(15.26, 0, 5, 22.6);
         servoPulso = hardwareMap.get(Servo.class,"ServoPunho");
         servoGarra = hardwareMap.get(Servo.class,"ServoGarra");
 
@@ -124,8 +125,10 @@ public class Opmode_inicial extends LinearOpMode {
         Carrossel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackRight.setDirection(DcMotorEx.Direction.REVERSE);
         motorFrontRight.setDirection(DcMotorEx.Direction.REVERSE);
+        motorOmbro.setDirection(DcMotorEx.Direction.REVERSE);
         // Wait for the game to start (driver presses PLAY)
         Robotic_Arm braco = new Robotic_Arm();
+        Arm_Robotic graveto = new Arm_Robotic();
         //a partir daqui o codigo é iniciado no celular
         waitForStart();
         runtime.reset();
@@ -175,24 +178,33 @@ public class Opmode_inicial extends LinearOpMode {
             /*
             Essa sequencia de if é encarregada de definir o alcance maximo do braço
              */
-            if (PosY > 0.45){
-                PosY = 0.45;
+            if (PosY > 0.4){
+                PosY = 0.4;
             }
             if (PosY < 0.1){
                 PosY = 0.1;
             }
 
-            if (PosX > 0.45) {
-                PosX = 0.45;
+            if (PosX > 0.4) {
+                PosX = 0.4;
             }
             if (PosX < 0.1) {
                 PosX = 0.1;
             }
 
             braco.setPos(PosX, PosY);
+            graveto.setPos(PosX, PosY);
             // Motores do braço se dirigem para o angolo exato levando em consideração os ajustes
-            motorOmbro.setTargetPosition((int)(braco.getMa() * fatorOmbro));
-            motorCotovelo.setTargetPosition((int)(braco.getC() * fatorCotovelo));
+            double ombro = graveto.getT1();
+            double cotovelo = graveto.getT2();
+            if (cotovelo != Double.NaN){
+                motorCotovelo.setTargetPosition((int)(cotovelo * fatorCotovelo));
+            }
+
+            if (ombro != Double.NaN){
+                motorOmbro.setTargetPosition((int)(ombro * fatorOmbro));
+            }
+
             // Choose to drive using either Tank Mode, or POV Mode
             // Comment out the method that's not used.  The default below is POV.
 
@@ -217,6 +229,9 @@ public class Opmode_inicial extends LinearOpMode {
             telemetry.addData("Posição Motor Cotovelo: ",motorCotovelo.getCurrentPosition());
             telemetry.addData("Target Position Ombro: ", motorOmbro.getTargetPosition());
             telemetry.addData("Target Position Cotovelo: ", motorCotovelo.getTargetPosition());
+
+            telemetry.addData("T1: ", Math.toDegrees(graveto.getT1()));
+            telemetry.addData("T2: ", Math.toDegrees(graveto.getT2()));
             telemetry.update();
         }
     }
