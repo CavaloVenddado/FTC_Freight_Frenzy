@@ -39,6 +39,8 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+
 
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -113,8 +115,8 @@ public class Opmode_inicial extends LinearOpMode {
         motorCotovelo.setTargetPosition(0);
         motorCotovelo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorOmbro.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorOmbro.setVelocity(600);
-        motorCotovelo.setVelocity(500);
+        motorOmbro.setVelocity(600); //600
+        motorCotovelo.setVelocity(500); //500
         motorCotovelo.setVelocityPIDFCoefficients(26.00, 0, 2, 13.6);
         motorOmbro.setVelocityPIDFCoefficients(15.26, 0, 5, 22.6);
         servoPulso = hardwareMap.get(Servo.class,"ServoPunho");
@@ -138,6 +140,8 @@ public class Opmode_inicial extends LinearOpMode {
         Seguencia de enquanto responsavel por operar o atuador do carrosel
         Se o botão b estiver pressionado, o motor irá girar!
          */
+        PosY = 0.5;
+        PosX = 0.1;
         while (opModeIsActive()) {
             if (gamepad1.b == true) {
                 Carrossel.setVelocity(-2500);
@@ -173,30 +177,30 @@ public class Opmode_inicial extends LinearOpMode {
             motorBackRight.setPower(backRightPower);
 
             PosY = PosY + gamepad2.right_stick_y * -0.001;
-            PosX = PosX + gamepad2.right_stick_x * 0.001;
+            PosX = PosX + gamepad2.left_stick_x * 0.001;
 
             /*
             Essa sequencia de if é encarregada de definir o alcance maximo do braço
              */
-            if (PosY > 0.4){
-                PosY = 0.4;
+            if (PosY > 3){
+                PosY = 3;
             }
             if (PosY < 0.1){
                 PosY = 0.1;
             }
 
-            if (PosX > 0.4) {
-                PosX = 0.4;
+            if (PosX > 3) {
+                PosX = 3;
             }
-            if (PosX < 0.1) {
-                PosX = 0.1;
+            if (PosX < -3) {
+                PosX = -3;
             }
 
             braco.setPos(PosX, PosY);
             graveto.setPos(PosX, PosY);
             // Motores do braço se dirigem para o angolo exato levando em consideração os ajustes
-            double ombro = graveto.getT1();
-            double cotovelo = graveto.getT2();
+            double ombro = Math.toRadians(180) - graveto.getT1();
+            double cotovelo = Math.toRadians(180) + graveto.getT2();
             if (cotovelo != Double.NaN){
                 motorCotovelo.setTargetPosition((int)(cotovelo * fatorCotovelo));
             }
@@ -217,21 +221,18 @@ public class Opmode_inicial extends LinearOpMode {
 
             // Sequencia responsavel por exibir no monitor os valores importantes do codigo.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Angulo Ma: ", Math.toDegrees(braco.getMa()));
-            telemetry.addData("Angulo C: ", Math.toDegrees(braco.getC()));
             telemetry.addData("Posição X2: ", PosX);
             telemetry.addData("Posição Y2: ", PosY);
-            telemetry.addData("Hipotenusa: ", braco.getc());
-
             telemetry.addData("Botão Ombro: ", botao1ombro.getState());
             telemetry.addData("Botão Cotovelo: ", botao2cotovelo.getState());
             telemetry.addData("Posição Motor Ombro: ",motorOmbro.getCurrentPosition());
             telemetry.addData("Posição Motor Cotovelo: ",motorCotovelo.getCurrentPosition());
             telemetry.addData("Target Position Ombro: ", motorOmbro.getTargetPosition());
             telemetry.addData("Target Position Cotovelo: ", motorCotovelo.getTargetPosition());
-
             telemetry.addData("T1: ", Math.toDegrees(graveto.getT1()));
             telemetry.addData("T2: ", Math.toDegrees(graveto.getT2()));
+            telemetry.addData("CurrentOmbro: ", motorOmbro.getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("CurrentCotovelo: ", motorCotovelo.getCurrent(CurrentUnit.AMPS));
             telemetry.update();
         }
     }
