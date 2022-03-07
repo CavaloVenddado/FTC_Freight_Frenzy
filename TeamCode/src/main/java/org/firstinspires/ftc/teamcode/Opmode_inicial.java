@@ -131,6 +131,9 @@ public class Opmode_inicial extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         Robotic_Arm braco = new Robotic_Arm();
         Arm_Robotic graveto = new Arm_Robotic();
+        CinematicaXPYP bracopos = new CinematicaXPYP();
+        CinematicaXNYP braconeg = new CinematicaXNYP();
+
         //a partir daqui o codigo é iniciado no celular
         waitForStart();
         runtime.reset();
@@ -198,15 +201,32 @@ public class Opmode_inicial extends LinearOpMode {
 
             braco.setPos(PosX, PosY);
             graveto.setPos(PosX, PosY);
+            bracopos.setPos(PosX, PosY);
+            braconeg.setPos(PosX, PosY);
             // Motores do braço se dirigem para o angolo exato levando em consideração os ajustes
-            double ombro = Math.toRadians(180) - graveto.getT1();
-            double cotovelo = Math.toRadians(180) + graveto.getT2();
-            if (cotovelo != Double.NaN){
-                motorCotovelo.setTargetPosition((int)(cotovelo * fatorCotovelo));
-            }
+            //double ombro = Math.toRadians(180) - graveto.getT1();
+            //double cotovelo = Math.toRadians(180) + graveto.getT2();
+            if (PosX > 0) {
+                double ombro = bracopos.getT1();
+                double cotovelo = bracopos.getT2();
+                if (cotovelo != Double.NaN) {
+                    motorCotovelo.setTargetPosition((int) (cotovelo * fatorCotovelo));
+                }
 
-            if (ombro != Double.NaN){
-                motorOmbro.setTargetPosition((int)(ombro * fatorOmbro));
+                if (ombro != Double.NaN) {
+                    motorOmbro.setTargetPosition((int) (ombro * fatorOmbro));
+                }
+            }
+            if (PosX <= 0) {
+                double ombro = bracopos.getT1();
+                double cotovelo = bracopos.getT2();
+                if (cotovelo != Double.NaN) {
+                    motorCotovelo.setTargetPosition((int) (cotovelo * fatorCotovelo));
+                }
+
+                if (ombro != Double.NaN) {
+                    motorOmbro.setTargetPosition((int) (ombro * fatorOmbro));
+                }
             }
 
             // Choose to drive using either Tank Mode, or POV Mode
