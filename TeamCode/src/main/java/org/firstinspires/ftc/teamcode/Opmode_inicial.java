@@ -204,9 +204,11 @@ public class Opmode_inicial extends LinearOpMode {
             bracopos.setPos(PosX, PosY);
             braconeg.setPos(PosX, PosY);
             // Motores do braço se dirigem para o angolo exato levando em consideração os ajustes
-            //double ombro = Math.toRadians(180) - graveto.getT1();
-            //double cotovelo = Math.toRadians(180) + graveto.getT2();
+            double ombro = Math.toRadians(180) - graveto.getT1();
+            double cotovelo = Math.toRadians(180) + graveto.getT2();
+            /* Cinematica Julio
             if (PosX > 0) {
+
                 double ombro = bracopos.getT1();
                 double cotovelo = bracopos.getT2();
                 if (cotovelo != Double.NaN) {
@@ -228,6 +230,7 @@ public class Opmode_inicial extends LinearOpMode {
                     motorOmbro.setTargetPosition((int) (ombro * fatorOmbro));
                 }
             }
+            */
 
             // Choose to drive using either Tank Mode, or POV Mode
             // Comment out the method that's not used.  The default below is POV.
