@@ -9,7 +9,7 @@ public class Cinematica_5 {
 
     double a = 0.30; //distancia entre o cotovelo e o pulso
     double b = 0.18; //distancia entre o ombro e o cotovelo
-    double a3 = 0.15;
+    double a3 = 0.12;
     private double Te2;
     private double Te1;
     private double Te3;

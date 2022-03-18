@@ -122,9 +122,9 @@ public class Opmode_inicial extends LinearOpMode {
         motorCotovelo.setTargetPosition(0);
         motorCotovelo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorOmbro.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorOmbro.setVelocity(600); //600
-        motorCotovelo.setVelocity(500); //500
-        motorCotovelo.setVelocityPIDFCoefficients(25.00, 0, 2, 13.6);
+        motorOmbro.setVelocity(800); //600
+        motorCotovelo.setVelocity(1000); //500
+        motorCotovelo.setVelocityPIDFCoefficients(25.00, 0, 5, 13.6);
         motorOmbro.setVelocityPIDFCoefficients(14.26, 0, 5, 22.6);
         servoPulso = hardwareMap.get(Servo.class,"ServoPunho");
         servoGarra = hardwareMap.get(Servo.class,"ServoGarra");
@@ -150,6 +150,7 @@ public class Opmode_inicial extends LinearOpMode {
          */
         PosY = -0.01;
         PosX = 0.1;
+        phi = Math.toRadians(270);
         while (opModeIsActive()) {
             if (gamepad1.b == true) {
                 Velocidade_Carrossel = Velocidade_Carrossel + 100;
@@ -180,9 +181,15 @@ public class Opmode_inicial extends LinearOpMode {
             motorFrontRight.setPower(frontRightPower);
             motorBackRight.setPower(backRightPower);
 
-            PosY = PosY + gamepad2.right_stick_x * -0.01;
-            PosX = PosX + gamepad2.left_stick_x * 0.01;
-            phi = Math.toRadians(270);
+            PosY = PosY + gamepad2.right_stick_y * -0.01;
+            PosX = PosX + gamepad2.right_stick_x * -0.01;
+            phi = phi + (gamepad2.left_stick_x * 0.1);
+            if (phi < Math.toRadians(90)){
+                phi = Math.toRadians(90);
+            }
+            if (phi > Math.toRadians(360)){
+                phi = Math.toRadians(360);
+            }
 
             /*
             Essa sequencia de if é encarregada de definir o alcance maximo do braço
@@ -199,6 +206,27 @@ public class Opmode_inicial extends LinearOpMode {
             }
             if (PosX < -2) {
                 PosX = -2;
+            }
+
+            if (gamepad2.a == true){
+                phi = Math.toRadians(260);
+                PosX = -0.1;
+                PosY = 0.01;
+            }
+            if (gamepad2.x == true){
+                phi = Math.toRadians(254);
+                PosX = -0.1;
+                PosY = 0.089;
+            }
+            if (gamepad2.y == true){
+                phi = Math.toRadians(246);
+                PosX = -0.123;
+                PosY = 0.227;
+            }
+            if (gamepad2.b == true){
+                phi = Math.toRadians(230);
+                PosX = -0.17;
+                PosY = 0.338;
             }
 
             braco2.setPos(PosX, PosY, phi);
@@ -242,6 +270,7 @@ public class Opmode_inicial extends LinearOpMode {
             telemetry.addData("Te3: ", Math.toDegrees(braco2.getTe3()));
             telemetry.addData("CurrentOmbro: ", motorOmbro.getCurrent(CurrentUnit.AMPS));
             telemetry.addData("CurrentCotovelo: ", motorCotovelo.getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("PHI: ", Math.toDegrees(phi));
             telemetry.update();
         }
     }
