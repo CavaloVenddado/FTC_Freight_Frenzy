@@ -90,7 +90,7 @@ public class ponto_0 extends LinearOpMode {
         a partir daqui os motores se dirigirão até os botões para definir o ponto 0 do ombro e
         cotovelo
          */
-
+        servoPulso.setPosition(1);
         motorOmbro.setPower(0.2);    //Código para alçancar o ponto 0 do ombro
         while (botao1ombro.getState() == false && opModeIsActive()) {
 

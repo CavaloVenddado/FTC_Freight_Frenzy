@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -74,8 +76,10 @@ public class Opmode_inicial extends LinearOpMode {
     private Servo servoGarra = null;
     private double PosY;
     private double PosX;
+    private double phi;
     private DigitalChannel botao1ombro;
     private DigitalChannel botao2cotovelo;
+    private int Velocidade_Carrossel;
 
     /*
     nestas proximas duas linhas foram definidas os fatores do cotovelo e do ombro
@@ -84,10 +88,13 @@ public class Opmode_inicial extends LinearOpMode {
      */
     private double fatorCotovelo = (-264/ Math.toRadians(180)); //-264 = 180°
     private double fatorOmbro = (5600 / Math.toRadians(180)); //5600 = 180°
+    private double fatorPulso = (1 / Math.toRadians(180));
     @Override
     public void runOpMode() {
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
 
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -117,11 +124,11 @@ public class Opmode_inicial extends LinearOpMode {
         motorOmbro.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorOmbro.setVelocity(600); //600
         motorCotovelo.setVelocity(500); //500
-        motorCotovelo.setVelocityPIDFCoefficients(26.00, 0, 2, 13.6);
-        motorOmbro.setVelocityPIDFCoefficients(15.26, 0, 5, 22.6);
+        motorCotovelo.setVelocityPIDFCoefficients(25.00, 0, 2, 13.6);
+        motorOmbro.setVelocityPIDFCoefficients(14.26, 0, 5, 22.6);
         servoPulso = hardwareMap.get(Servo.class,"ServoPunho");
         servoGarra = hardwareMap.get(Servo.class,"ServoGarra");
-
+        servoPulso.setPosition(1);
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         Carrossel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -129,10 +136,12 @@ public class Opmode_inicial extends LinearOpMode {
         motorFrontRight.setDirection(DcMotorEx.Direction.REVERSE);
         motorOmbro.setDirection(DcMotorEx.Direction.REVERSE);
         // Wait for the game to start (driver presses PLAY)
-        Robotic_Arm braco = new Robotic_Arm();
-        Arm_Robotic graveto = new Arm_Robotic();
-        CinematicaXPYP bracopos = new CinematicaXPYP();
-        CinematicaXNYP braconeg = new CinematicaXNYP();
+
+        //Robotic_Arm braco = new Robotic_Arm();
+        //Arm_Robotic graveto = new Arm_Robotic();
+        //CinematicaXPYP bracopos = new CinematicaXPYP();
+        //CinematicaXNYP braconeg = new CinematicaXNYP();
+        Cinematica_5 braco2 = new Cinematica_5();
 
         //a partir daqui o codigo é iniciado no celular
         waitForStart();
@@ -143,27 +152,23 @@ public class Opmode_inicial extends LinearOpMode {
         Seguencia de enquanto responsavel por operar o atuador do carrosel
         Se o botão b estiver pressionado, o motor irá girar!
          */
-        PosY = 0.5;
+        PosY = -0.01;
         PosX = 0.1;
         while (opModeIsActive()) {
             if (gamepad1.b == true) {
-                Carrossel.setVelocity(-2500);
+                Velocidade_Carrossel = Velocidade_Carrossel + 100;
+                Carrossel.setVelocity(Velocidade_Carrossel);
             } else {
                 Carrossel.setVelocity(0);
+                Velocidade_Carrossel = 0;
             }
             /*
-            Declaração de variaveis referentes à movimentoção das rodas.
+            Declaração de variaveis referentes à movimentação das rodas.
              */
             double velocity = gamepad1.right_trigger;
             double y = gamepad1.left_stick_y * velocity;
             double x = gamepad1.left_stick_x * -1.1 * velocity;
             double rx = -gamepad1.right_stick_x * velocity;
-
-            /*
-            Declaração de variaveis referentes a posição do braço
-             */
-            double y2 = gamepad2.right_stick_y;
-            double x2 = gamepad2.right_stick_x;
 
             /*
             Codigo responsavel pela movimentação do robô
@@ -179,33 +184,35 @@ public class Opmode_inicial extends LinearOpMode {
             motorFrontRight.setPower(frontRightPower);
             motorBackRight.setPower(backRightPower);
 
-            PosY = PosY + gamepad2.right_stick_y * -0.001;
-            PosX = PosX + gamepad2.left_stick_x * 0.001;
+            PosY = PosY + gamepad2.right_stick_x * -0.01;
+            PosX = PosX + gamepad2.left_stick_x * 0.01;
+            phi = Math.toRadians(270);
 
             /*
             Essa sequencia de if é encarregada de definir o alcance maximo do braço
              */
-            if (PosY > 3){
-                PosY = 3;
+            if (PosY > 2){
+                PosY = 2;
             }
-            if (PosY < 0.1){
-                PosY = 0.1;
-            }
-
-            if (PosX > 3) {
-                PosX = 3;
-            }
-            if (PosX < -3) {
-                PosX = -3;
+            if (PosY < -2){
+                PosY = -2;
             }
 
-            braco.setPos(PosX, PosY);
-            graveto.setPos(PosX, PosY);
-            bracopos.setPos(PosX, PosY);
-            braconeg.setPos(PosX, PosY);
+            if (PosX > 2) {
+                PosX = 2;
+            }
+            if (PosX < -2) {
+                PosX = -2;
+            }
+
+            //braco.setPos(PosX, PosY);
+            //graveto.setPos(PosX, PosY);
+            //bracopos.setPos(PosX, PosY);
+            //braconeg.setPos(PosX, PosY);
+            braco2.setPos(PosX, PosY, phi);
             // Motores do braço se dirigem para o angolo exato levando em consideração os ajustes
-            double ombro = Math.toRadians(180) - graveto.getT1();
-            double cotovelo = Math.toRadians(180) + graveto.getT2();
+            //double ombro = Math.toRadians(180) - graveto.getT1();
+            //double cotovelo = Math.toRadians(180) + graveto.getT2();
             /* Cinematica Julio
             if (PosX > 0) {
 
@@ -231,7 +238,20 @@ public class Opmode_inicial extends LinearOpMode {
                 }
             }
             */
+            //aplicar posições no robo
+            double ombro = braco2.getTe1();
+            double cotovelo = braco2.getTe2();
+            double pulso = Math.toRadians(180) - braco2.getTe3();
+            if (cotovelo != Double.NaN && cotovelo > Math.toRadians(0) && cotovelo < Math.toRadians(180)) {
+                motorCotovelo.setTargetPosition((int) (cotovelo * fatorCotovelo));
+            }
 
+            if (ombro != Double.NaN && ombro > Math.toRadians(0) && ombro < Math.toRadians(180)) {
+                motorOmbro.setTargetPosition((int) (ombro * fatorOmbro));
+            }
+            if (pulso != Double.NaN && pulso*fatorPulso >= 0 && pulso*fatorPulso <= 1){
+                servoPulso.setPosition(pulso*fatorPulso);
+            }
             // Choose to drive using either Tank Mode, or POV Mode
             // Comment out the method that's not used.  The default below is POV.
 
@@ -252,8 +272,9 @@ public class Opmode_inicial extends LinearOpMode {
             telemetry.addData("Posição Motor Cotovelo: ",motorCotovelo.getCurrentPosition());
             telemetry.addData("Target Position Ombro: ", motorOmbro.getTargetPosition());
             telemetry.addData("Target Position Cotovelo: ", motorCotovelo.getTargetPosition());
-            telemetry.addData("T1: ", Math.toDegrees(graveto.getT1()));
-            telemetry.addData("T2: ", Math.toDegrees(graveto.getT2()));
+            telemetry.addData("Te1: ", Math.toDegrees(braco2.getTe1()));
+            telemetry.addData("Te2: ", Math.toDegrees(braco2.getTe2()));
+            telemetry.addData("Te3: ", Math.toDegrees(braco2.getTe3()));
             telemetry.addData("CurrentOmbro: ", motorOmbro.getCurrent(CurrentUnit.AMPS));
             telemetry.addData("CurrentCotovelo: ", motorCotovelo.getCurrent(CurrentUnit.AMPS));
             telemetry.update();
