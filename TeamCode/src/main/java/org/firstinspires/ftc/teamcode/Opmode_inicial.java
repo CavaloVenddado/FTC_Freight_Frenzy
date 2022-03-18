@@ -137,10 +137,6 @@ public class Opmode_inicial extends LinearOpMode {
         motorOmbro.setDirection(DcMotorEx.Direction.REVERSE);
         // Wait for the game to start (driver presses PLAY)
 
-        //Robotic_Arm braco = new Robotic_Arm();
-        //Arm_Robotic graveto = new Arm_Robotic();
-        //CinematicaXPYP bracopos = new CinematicaXPYP();
-        //CinematicaXNYP braconeg = new CinematicaXNYP();
         Cinematica_5 braco2 = new Cinematica_5();
 
         //a partir daqui o codigo é iniciado no celular
@@ -205,39 +201,8 @@ public class Opmode_inicial extends LinearOpMode {
                 PosX = -2;
             }
 
-            //braco.setPos(PosX, PosY);
-            //graveto.setPos(PosX, PosY);
-            //bracopos.setPos(PosX, PosY);
-            //braconeg.setPos(PosX, PosY);
             braco2.setPos(PosX, PosY, phi);
-            // Motores do braço se dirigem para o angolo exato levando em consideração os ajustes
-            //double ombro = Math.toRadians(180) - graveto.getT1();
-            //double cotovelo = Math.toRadians(180) + graveto.getT2();
-            /* Cinematica Julio
-            if (PosX > 0) {
 
-                double ombro = bracopos.getT1();
-                double cotovelo = bracopos.getT2();
-                if (cotovelo != Double.NaN) {
-                    motorCotovelo.setTargetPosition((int) (cotovelo * fatorCotovelo));
-                }
-
-                if (ombro != Double.NaN) {
-                    motorOmbro.setTargetPosition((int) (ombro * fatorOmbro));
-                }
-            }
-            if (PosX <= 0) {
-                double ombro = bracopos.getT1();
-                double cotovelo = bracopos.getT2();
-                if (cotovelo != Double.NaN) {
-                    motorCotovelo.setTargetPosition((int) (cotovelo * fatorCotovelo));
-                }
-
-                if (ombro != Double.NaN) {
-                    motorOmbro.setTargetPosition((int) (ombro * fatorOmbro));
-                }
-            }
-            */
             //aplicar posições no robo
             double ombro = braco2.getTe1();
             double cotovelo = braco2.getTe2();
