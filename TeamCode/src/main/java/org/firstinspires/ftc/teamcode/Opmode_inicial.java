@@ -111,6 +111,11 @@ public class Opmode_inicial extends LinearOpMode {
         motorFrontRight = hardwareMap.get(DcMotorEx.class,"motorFrontRight");
         motorBackRight = hardwareMap.get(DcMotorEx.class,"motorBackRight");
 
+        motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         botao1ombro = hardwareMap.get(DigitalChannel.class, "Botao1Ombro");
         botao2cotovelo = hardwareMap.get(DigitalChannel.class, "Botao2Cotovelo");
         botao1ombro.setMode(DigitalChannel.Mode.INPUT);
@@ -124,8 +129,8 @@ public class Opmode_inicial extends LinearOpMode {
         motorOmbro.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorOmbro.setVelocity(800); //600
         motorCotovelo.setVelocity(1000); //500
-        motorCotovelo.setVelocityPIDFCoefficients(25.00, 0, 5, 13.6);
-        motorOmbro.setVelocityPIDFCoefficients(14.26, 0, 5, 22.6);
+        motorCotovelo.setVelocityPIDFCoefficients(40.00, 0, 0, 13.6);
+        motorOmbro.setVelocityPIDFCoefficients(14.26, 0.1, 5, 22.6);
         servoPulso = hardwareMap.get(Servo.class,"ServoPunho");
         servoGarra = hardwareMap.get(Servo.class,"ServoGarra");
         servoPulso.setPosition(1);
@@ -162,7 +167,7 @@ public class Opmode_inicial extends LinearOpMode {
             /*
             Declaração de variaveis referentes à movimentação das rodas.
              */
-            double velocity = gamepad1.right_trigger;
+            double velocity = (gamepad1.right_trigger * 0.80) + 0.20;
             double y = gamepad1.left_stick_y * velocity;
             double x = gamepad1.left_stick_x * -1.1 * velocity;
             double rx = -gamepad1.right_stick_x * velocity;
@@ -227,6 +232,17 @@ public class Opmode_inicial extends LinearOpMode {
                 phi = Math.toRadians(230);
                 PosX = -0.17;
                 PosY = 0.338;
+            }
+            if (gamepad2.dpad_right == true) {
+                phi = Math.toRadians(270);
+                PosX = -0.2806;
+                PosY = -0.1149;
+                //motorOmbro.setVelocity(-800); //wtf
+            }
+            if (gamepad2.dpad_up == true) {
+                PosY = -0.01;
+                PosX = 0.1;
+                phi = Math.toRadians(270);
             }
 
             braco2.setPos(PosX, PosY, phi);
