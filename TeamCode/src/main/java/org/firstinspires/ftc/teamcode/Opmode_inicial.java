@@ -130,7 +130,11 @@ public class Opmode_inicial extends LinearOpMode {
         motorOmbro.setVelocity(800); //600
         motorCotovelo.setVelocity(1000); //500
         motorCotovelo.setVelocityPIDFCoefficients(40.00, 0, 0, 13.6);
-        motorOmbro.setVelocityPIDFCoefficients(14.26, 0.1, 5, 22.6);
+        motorOmbro.setVelocityPIDFCoefficients(14.26, 0.1, 0, 22.6);
+        /*
+        Motor Cotovelo   PIDF = 40.00 , 0 , 0 , 13.6
+        Motor Ombro      PIDF = 14.26 , 0.1 , 5 , 22.6
+         */
         servoPulso = hardwareMap.get(Servo.class,"ServoPunho");
         servoGarra = hardwareMap.get(Servo.class,"ServoGarra");
         servoPulso.setPosition(1);
@@ -234,9 +238,9 @@ public class Opmode_inicial extends LinearOpMode {
                 PosY = 0.338;
             }
             if (gamepad2.dpad_right == true) {
-                phi = Math.toRadians(270);
+                phi = Math.toRadians(278);
                 PosX = -0.2806;
-                PosY = -0.1149;
+                PosY = -0.0147;
                 //motorOmbro.setVelocity(-800); //wtf
             }
             if (gamepad2.dpad_up == true) {
@@ -246,6 +250,8 @@ public class Opmode_inicial extends LinearOpMode {
             }
 
             braco2.setPos(PosX, PosY, phi);
+
+
 
             //aplicar posições no robo
             double ombro = braco2.getTe1();
