@@ -80,6 +80,7 @@ public class Opmode_inicial extends LinearOpMode {
     private DigitalChannel botao1ombro;
     private DigitalChannel botao2cotovelo;
     private int Velocidade_Carrossel;
+    private ElapsedTime tempodegiro = new ElapsedTime();
 
     /*
     nestas proximas duas linhas foram definidas os fatores do cotovelo e do ombro
@@ -162,9 +163,15 @@ public class Opmode_inicial extends LinearOpMode {
         phi = Math.toRadians(270);
         while (opModeIsActive()) {
             if (gamepad1.b == true) {
-                Velocidade_Carrossel = Velocidade_Carrossel + 100;
+                Velocidade_Carrossel = 1500;
                 Carrossel.setVelocity(Velocidade_Carrossel);
-            } else {
+                tempodegiro.reset();
+                if(tempodegiro.seconds() > 3){
+                    Velocidade_Carrossel = 3000;
+                    Carrossel.setVelocity(Velocidade_Carrossel);
+                }
+            }
+            else {
                 Carrossel.setVelocity(0);
                 Velocidade_Carrossel = 0;
             }
