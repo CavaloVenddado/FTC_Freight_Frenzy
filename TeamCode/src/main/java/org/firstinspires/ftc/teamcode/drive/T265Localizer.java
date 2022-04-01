@@ -28,10 +28,10 @@ public class T265Localizer implements Localizer {
 
     public static T265Camera slamra;
 
-    public static double slamraX = -9;
-    public static double slamraY = 0;
+    public static double slamraX = 0;
+    public static double slamraY = 7.25;
 
-    public static boolean makeCameraCenter = true;
+    public static boolean makeCameraCenter = false;
     private static final double angleModifer = 0.0;
 
     private static T265Camera.PoseConfidence poseConfidence;
