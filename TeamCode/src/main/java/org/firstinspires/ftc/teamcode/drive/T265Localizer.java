@@ -29,9 +29,9 @@ public class T265Localizer implements Localizer {
     public static T265Camera slamra;
 
     public static double slamraX = 0;
-    public static double slamraY = 7.25;
+    public static double slamraY = 0;
 
-    public static boolean makeCameraCenter = false;
+    public static boolean makeCameraCenter = true;
     private static final double angleModifer = 0.0;
 
     private static T265Camera.PoseConfidence poseConfidence;
@@ -46,7 +46,7 @@ public class T265Localizer implements Localizer {
         rawPose = new Pose2d();
 
         if (slamra == null) {
-            slamra = new T265Camera(new Transform2d(new Translation2d(0,0), new Rotation2d(0)), 0, hardwareMap.appContext);
+            slamra = new T265Camera(new Transform2d(new Translation2d(0,0.185), new Rotation2d(0)), 0, hardwareMap.appContext);
             RobotLog.d("Created Realsense Object");
             setPoseEstimate(new Pose2d(0,0,0));
         }
