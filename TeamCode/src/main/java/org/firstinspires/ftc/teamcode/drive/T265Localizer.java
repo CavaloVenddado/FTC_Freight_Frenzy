@@ -46,7 +46,7 @@ public class T265Localizer implements Localizer {
         rawPose = new Pose2d();
 
         if (slamra == null) {
-            slamra = new T265Camera(new Transform2d(new Translation2d(0,0.185), new Rotation2d(0)), 0, hardwareMap.appContext);
+            slamra = new T265Camera(new Transform2d(new Translation2d(-0.185,0), new Rotation2d(0)), 0, hardwareMap.appContext);
             RobotLog.d("Created Realsense Object");
             setPoseEstimate(new Pose2d(0,0,0));
         }
@@ -78,46 +78,17 @@ public class T265Localizer implements Localizer {
             Rotation2d oldRot = up.pose.getRotation();
             //The T265's unit of measurement is meters.  dividing it by .0254 converts meters to inches.
             rawPose = new Pose2d(oldPose.getX() / .0254, oldPose.getY() / .0254, norm(oldRot.getRadians() + angleModifer)); //raw pos
-            mPoseEstimate = rawPose.plus(poseOffset); //offsets the pose to be what the pose estimate is;
+            mPoseEstimate = rawPose; //offsets the pose to be what the pose estimate is;
         } else {
             RobotLog.v("NULL Camera Update");
         }
-
-//       try {
-//           if (up.confidence == T265Camera.PoseConfidence.Failed) {
-//               RobotLog.setGlobalWarningMessage("Realsense Failed");
-//           }
-//       } catch (Exception e) {
-//           RobotLog.setGlobalWarningMessage("Realsense Might have failed");
-//       }
-//        RobotLog.v("Raw POS: " + rawPose.toString());
-//        RobotLog.v("POSE OFFSET " + poseOffset.toString());
-//        RobotLog.v("POSE ESTIMATE " + mPoseEstimate.toString());
-        if (makeCameraCenter) return mPoseEstimate;
-        else {
-            Pose2d robotCenter = adjustPosbyCameraPos();
-            RobotLog.v("robot Center pos: " + robotCenter.toString());
-            return robotCenter;
-        }
+        return mPoseEstimate;
     }
 
     @Override
     public void setPoseEstimate(@NotNull Pose2d pose2d) {
+        slamra.setPose(new com.arcrobotics.ftclib.geometry.Pose2d(new Translation2d(pose2d.getX(), pose2d.getY()), new Rotation2d(pose2d.getHeading())));
         RobotLog.v("Set Pose to " + pose2d.toString());
-        //  Pose2d newPos = new Pose2d(pose2d.getX() * .0254, pose2d.getY() * .0254, pose2d.getHeading());
-        // slamra.setPose(new com.arcrobotics.ftclib.geometry.Pose2d(newPos.getX(), newPos.getY(), new Rotation2d(newPos.getHeading())));
-        pose2d = new Pose2d(pose2d.getX(),pose2d.getY(),0);
-        RobotLog.v("SETTING POSE ESTIMATE TO " + pose2d.toString());
-        poseOffset = pose2d.minus(rawPose);
-        poseOffset = new Pose2d(poseOffset.getX(), poseOffset.getY(), Math.toRadians(0));
-        RobotLog.v("SET POSE OFFSET TO " + poseOffset.toString());
-        // mPoseEstimate = rawPose.plus(poseOffset); //set mPose to new pose.
-//        /* Alternate to using pose2d.minus()*/
-//        try {
-//            poseOffset = new Pose2d(pose2d.getX() - rawPose.getX(), pose2d.getY() - rawPose.getY(), pose2d.getHeading() - rawPose.getHeading());
-//        } catch (Exception e) {
-//
-//        }
     }
 
     public static T265Camera.PoseConfidence getConfidence() {
