@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import android.icu.util.LocaleData;
-
+@Deprecated
 public class CinematicaXNYP {
     /**
      * codigo escrito pela equipe cavalo vendado 16786 temporada freght frenzy dia 2/2/2022

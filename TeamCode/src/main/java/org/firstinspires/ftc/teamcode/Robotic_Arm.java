@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+@Deprecated
 public class Robotic_Arm {
     /**
      * codigo escrito pela equipe cavalo vendado 16786 temporada freght frenzy dia 2/2/2022
