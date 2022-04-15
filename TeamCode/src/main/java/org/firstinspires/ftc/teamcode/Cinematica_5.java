@@ -38,9 +38,9 @@ public class Cinematica_5 {
         Te3 = phi - Te1 - Te2;
     }
     // parte do código responsavel por retornar o robo, ao código principal
-    public double getTe1() {return Te1;}
+    public double getTe1() {return Te1;}//ombro
     public double getTe2() {
         return (Math.toRadians(180) - Te2);
-    }
-    public double getTe3() {return Te3;}
+    }//cotovelo
+    public double getTe3() {return Te3;}//pulso
 }
