@@ -16,12 +16,12 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  */
 @TeleOp(group = "drive")
 public class LocalizationTest extends LinearOpMode {
+    private boolean waspressed = false;
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
         waitForStart();
 
         while (!isStopRequested()) {
@@ -34,7 +34,12 @@ public class LocalizationTest extends LinearOpMode {
             );
 
             drive.update();
-
+            if(gamepad1.back && !waspressed){
+                waspressed = true;
+                drive.setPoseEstimate(new Pose2d(0, 0, 0));
+            }else if(!gamepad1.back){
+                waspressed = false;
+            }
             Pose2d poseEstimate = drive.getPoseEstimate();
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());

@@ -48,7 +48,6 @@ public class T265Localizer implements Localizer {
         if (slamra == null) {
             slamra = new T265Camera(new Transform2d(new Translation2d(-0.185,0), new Rotation2d(0)), 0, hardwareMap.appContext);
             RobotLog.d("Created Realsense Object");
-            setPoseEstimate(new Pose2d(0,0,0));
         }
         try {
             startRealsense();
@@ -77,7 +76,7 @@ public class T265Localizer implements Localizer {
             Translation2d oldPose = up.pose.getTranslation();
             Rotation2d oldRot = up.pose.getRotation();
             //The T265's unit of measurement is meters.  dividing it by .0254 converts meters to inches.
-            rawPose = new Pose2d(oldPose.getX() / .0254, oldPose.getY() / .0254, norm(oldRot.getRadians() + angleModifer)); //raw pos
+            rawPose = new Pose2d(oldPose.getX() / .0254, oldPose.getY() / .0254, oldRot.getRadians()); //raw pos
             mPoseEstimate = rawPose; //offsets the pose to be what the pose estimate is;
         } else {
             RobotLog.v("NULL Camera Update");
@@ -87,7 +86,7 @@ public class T265Localizer implements Localizer {
 
     @Override
     public void setPoseEstimate(@NotNull Pose2d pose2d) {
-        slamra.setPose(new com.arcrobotics.ftclib.geometry.Pose2d(new Translation2d(pose2d.getX(), pose2d.getY()), new Rotation2d(pose2d.getHeading())));
+        slamra.setPose(new com.arcrobotics.ftclib.geometry.Pose2d(new Translation2d(pose2d.getX() * .0254, pose2d.getY() * .0254), new Rotation2d(pose2d.getHeading())));
         RobotLog.v("Set Pose to " + pose2d.toString());
     }
 
@@ -99,7 +98,7 @@ public class T265Localizer implements Localizer {
      * @return the heading of the robot (in radains)
      */
     public static double getHeading() {
-        return norma(mPoseEstimate.getHeading() - angleModifer);
+        return mPoseEstimate.getHeading();
     }
 
     /**
@@ -141,21 +140,6 @@ public class T265Localizer implements Localizer {
         while (angle>Math.toRadians(360)) angle-=Math.toRadians(360);
         while (angle<=0) angle+=Math.toRadians(360);
         return angle;
-    }
-
-    /**
-     * DO NOT USE THiS
-     */
-    @Deprecated
-    @SuppressWarnings("SpellCheckingInspection")
-    private Pose2d adjustPosbyCameraPos()
-    {
-        double dist = Math.hypot(slamraX,slamraY); //distance camera is from center
-        double angle = Math.atan2(slamraY,slamraX);
-        double cameraAngle = mPoseEstimate.getHeading() - angle;
-        double detlaX = dist * Math.cos(cameraAngle);
-        double detlaY = dist * Math.sin(cameraAngle);
-        return mPoseEstimate.minus(new Pose2d(detlaX,detlaY));
     }
 
     /**
