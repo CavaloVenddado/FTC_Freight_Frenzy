@@ -15,13 +15,13 @@
 apply from: '../build.common.gradle'
 apply from: '../build.dependencies.gradle'
 repositories {
-    //maven { url = "https://maven.0x778.tk" }
+    maven { url = "https://maven.0x778.tk" }
+    maven { url "${project.rootDir}/libs/realsenseRepo"}
 }
 dependencies {
     implementation project(':FtcRobotController')
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
-    implementation(name:'ftc265', ext:'aar')
-    implementation 'com.spartronics4915.lib:ftc265:2.2.0@aar'
+    implementation 'com.spartronics4915.lib:ftc265:2.2.0'
     implementation 'org.openftc:easyopencv:1.5.1'
     implementation 'org.ftclib.ftclib:core:2.0.1'
     implementation 'com.acmerobotics.roadrunner:core:0.5.5'
