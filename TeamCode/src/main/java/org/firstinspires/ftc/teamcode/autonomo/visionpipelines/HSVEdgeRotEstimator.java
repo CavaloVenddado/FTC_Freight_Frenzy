@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode.autonomo.visionpipelines;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.util.ArrayList;
 import org.opencv.core.Core;
 import org.opencv.core.Size;
@@ -71,14 +70,12 @@ public class HSVEdgeRotEstimator extends OpenCvPipeline {
 	private Mat hierarchy = new Mat();
 	//private Mat maskedInputMat = new Mat();
 	private Mat element1 = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new  Size(20,20));
-	private Telemetry telemetry = null;
     
     private Mat cameraMatrix;
     private double tagsizeX = 0.325;
     private double tagsizeY = 0.26;
 	
-	public HSVEdgeRotEstimator(Telemetry telemetry) {
-        this.telemetry = telemetry;
+	public HSVEdgeRotEstimator() {
         constructMatrix();
     }
     @Override
@@ -101,8 +98,6 @@ public class HSVEdgeRotEstimator extends OpenCvPipeline {
         //if wanted, show only part of image inside filter
 		//maskedInputMat.release();
 		//Core.bitwise_and(input, input, maskedInputMat, binaryMat);
-		//show amount of detections on telemetry
-        telemetry.addData("[detections]", contours.size());
 		for (int i = 0; i < contours.size(); i++) {
 			Mat contour = contours.get(i);
 			MatOfPoint mpoints = new MatOfPoint(contour);
@@ -120,7 +115,6 @@ public class HSVEdgeRotEstimator extends OpenCvPipeline {
         //Core.inRange(ycrcbMat, lower, upper, binaryMat);
         //maskedInputMat.release();
         //Core.bitwise_and(input, input, maskedInputMat, binaryMat);
-		telemetry.update();
         return input;
     }
 	static void drawRotatedRect(RotatedRect rect, Mat drawOn, Scalar lineColor, Scalar edgeColor)

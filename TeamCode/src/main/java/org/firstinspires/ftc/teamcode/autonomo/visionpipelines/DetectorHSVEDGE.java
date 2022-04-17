@@ -75,12 +75,16 @@ public class DetectorHSVEDGE extends OpenCvPipeline {
 		for (int i = 0; i < contours.size(); i++) {
 			Mat contour = contours.get(i);
 			Rect rect = Imgproc.boundingRect(contour);
-			detections = 0;
-			if(Imgproc.contourArea(contour) > minsize && rect.width > 30){
-				detections = 1;
+			detections = -1;
+			if(Imgproc.contourArea(contour) > minsize){
 				Imgproc.rectangle (maskedInputMat, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), color, 2);
-				if(rect.height > 70){
+				int distance = (rect.x + rect.width/2) - input.width()/2;
+				if(distance<100){
+					detections = 0;
+				}else if(distance>100){
 					detections = 2;
+				}else {
+					detections = 1;
 				}
 			}
 
