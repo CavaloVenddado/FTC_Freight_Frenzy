@@ -28,12 +28,6 @@ public class T265Localizer implements Localizer {
 
     public static T265Camera slamra;
 
-    public static double slamraX = 0;
-    public static double slamraY = 0;
-
-    public static boolean makeCameraCenter = true;
-    private static final double angleModifer = 0.0;
-
     private static T265Camera.PoseConfidence poseConfidence;
 
     public T265Localizer(HardwareMap hardwareMap) {
@@ -123,23 +117,6 @@ public class T265Localizer implements Localizer {
 
         ChassisSpeeds velocity = up.velocity;
         return new Pose2d(velocity.vxMetersPerSecond /.0254,velocity.vyMetersPerSecond /.0254,velocity.omegaRadiansPerSecond);
-    }
-
-    /**
-     * @param angle angle in radians
-     * @return normiazled angle between ranges 0 to 2Pi
-     */
-    private double norm(double angle)
-    {
-        while (angle>Math.toRadians(360)) angle-=Math.toRadians(360);
-        while (angle<=0) angle+=Math.toRadians(360);
-        return angle;
-    }
-    private static double norma(double angle)
-    {
-        while (angle>Math.toRadians(360)) angle-=Math.toRadians(360);
-        while (angle<=0) angle+=Math.toRadians(360);
-        return angle;
     }
 
     /**

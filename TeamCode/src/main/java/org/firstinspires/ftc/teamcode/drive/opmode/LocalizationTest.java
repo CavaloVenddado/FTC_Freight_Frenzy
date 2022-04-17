@@ -36,7 +36,7 @@ public class LocalizationTest extends LinearOpMode {
             drive.update();
             if(gamepad1.back && !waspressed){
                 waspressed = true;
-                drive.setPoseEstimate(new Pose2d(0, 0, 0));
+                drive.setPoseEstimate(new Pose2d(10, 10, 0));
             }else if(!gamepad1.back){
                 waspressed = false;
             }
