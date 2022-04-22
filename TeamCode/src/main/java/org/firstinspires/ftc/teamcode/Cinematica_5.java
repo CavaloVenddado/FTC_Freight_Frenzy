@@ -4,12 +4,11 @@ public class Cinematica_5 {
     /**
      * codigo escrito pela equipe cavalo vendado 16786 temporada freght frenzy dia 2/2/2022
      * este codigo realiza a cinemática de um  braço mecanico de 2 eixos utilizando trigonometria
-     *
      */
 
     double a = 0.30; //distancia entre o cotovelo e o pulso
     double b = 0.18; //distancia entre o ombro e o cotovelo
-    double a3 = 0.12;
+    double a3 = 0.12; //tamanho da garra
     private double Te2;
     private double Te1;
     private double Te3;
@@ -20,7 +19,13 @@ public class Cinematica_5 {
     private double c1;
     private double wx;
     private double wy;
-
+    /*
+        px: posição da ponta do atuador em x
+        py: posição da ponta do atuador em y
+        phi: ângulo desejado do atudaor
+        as posiçoes do braço são calculadas a partir da posição da ponta da garra e
+        ângulo do pulso desejado.
+     */
     public void setPos(double px, double py, double phi) { //inicio da funcao cinematica
 
         wx = px - a3*Math.cos(phi);
