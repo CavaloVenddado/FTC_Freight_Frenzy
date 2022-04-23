@@ -28,8 +28,8 @@ public class DetectorHSVEDGE extends OpenCvPipeline {
      * min and max values here for now, meaning
      * that all pixels will be shown.
      */
-    public Scalar lower = new Scalar(61, 195, 0);
-    public Scalar upper = new Scalar(135, 255, 255);
+    public Scalar lower = new Scalar(47, 61, 0);
+    public Scalar upper = new Scalar(100, 255, 255);
 	public int minsize = 200;
     /*
      * A good practice when typing EOCV pipelines is

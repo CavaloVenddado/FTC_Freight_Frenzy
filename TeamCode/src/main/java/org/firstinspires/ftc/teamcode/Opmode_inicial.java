@@ -246,19 +246,19 @@ public class Opmode_inicial extends LinearOpMode {
                 PosY = 0.089;
             }
             if (gamepad2.y == true){
-                phi = Math.toRadians(246);
-                PosX = -0.123;
-                PosY = 0.227;
+                phi = Math.toRadians(256);//246
+                PosX = 0.0212;//-0.123
+                PosY = 0.1798;//0.227
             }
             if (gamepad2.b == true){
-                phi = Math.toRadians(230);
-                PosX = -0.17;
-                PosY = 0.338;
+                phi = Math.toRadians(222);//230
+                PosX = -0.04;//-0.17
+                PosY = 0.31;//0.338
             }
             if (gamepad2.dpad_right == true) {
-                phi = Math.toRadians(278);
-                PosX = -0.2806;
-                PosY = -0.0147;
+                phi = Math.toRadians(295.9083);
+                PosX = -0.06;
+                PosY = -0.02;
                 //motorOmbro.setVelocity(-800); //wtf
             }
             if (gamepad2.dpad_left == true) {

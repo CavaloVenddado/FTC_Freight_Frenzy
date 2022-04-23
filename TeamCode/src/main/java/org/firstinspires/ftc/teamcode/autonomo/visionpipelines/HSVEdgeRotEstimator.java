@@ -31,8 +31,8 @@ public class HSVEdgeRotEstimator extends OpenCvPipeline {
      *
      * Minimum and maximum on HSV sace for binary filter later
      */
-    public Scalar lower = new Scalar(61, 195, 0);
-    public Scalar upper = new Scalar(135, 255, 255);
+    public Scalar lower = new Scalar(17, 0, 134);
+    public Scalar upper = new Scalar(41, 255, 255);
 	public int minsize = 150;
     
     /*
