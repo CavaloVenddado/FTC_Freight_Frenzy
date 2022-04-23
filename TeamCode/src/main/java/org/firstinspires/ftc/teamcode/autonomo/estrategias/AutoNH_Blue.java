@@ -35,6 +35,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.autonomo.visionpipelines.DetectorHSVEDGE;
@@ -44,12 +45,14 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-@Autonomous(name="Hamburauto_vermelho", group="Auto")
+@Autonomous(name="Hamburauto_Blue", group="Auto")
 public class AutoNH_Blue extends LinearOpMode {
     OpenCvCamera camera;
+    private DcMotorEx Carrossel = null;
     @Override
     public void runOpMode() {
         //init camera
+        Carrossel = hardwareMap.get(DcMotorEx.class, "Carrossel");
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         DetectorHSVEDGE colorfilter = new DetectorHSVEDGE();
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -77,26 +80,27 @@ public class AutoNH_Blue extends LinearOpMode {
 
         Pose2d startPose = new Pose2d(-31,62, Math.toRadians(270));
 
-        drive.setPoseEstimate(startPose);
-
         //start trajectory
         TrajectorySequence toShippingHub = drive.trajectorySequenceBuilder(startPose)
                 .splineTo(new Vector2d(-12,45), Math.toRadians(270))
                 .build();
         TrajectorySequence toCarossel = drive.trajectorySequenceBuilder(new Pose2d(-12,45,Math.toRadians(270)))
                 .strafeTo(new Vector2d(-65,55))
+                .addTemporalMarker(() -> {Carrossel.setPower(1);})
                 .waitSeconds(3)
+                .addTemporalMarker(() -> {Carrossel.setPower(0);})
                 .build();
         TrajectorySequence toArmazem = drive.trajectorySequenceBuilder(new Pose2d(-65,55,Math.toRadians(270)))
                 .strafeTo(new Vector2d(-60,55))
-                .splineToSplineHeading(new Pose2d(0,65, Math.toRadians(0)), Math.toRadians(0))
-                .splineTo(new Vector2d(40,65.5), Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(0,66, Math.toRadians(0)), Math.toRadians(0))
+                .strafeTo(new Vector2d(40,66.25))
                 .build();
 
         while (!isStarted()){
             telemetry.addData("Detection results", colorfilter.getAnalysis());
             telemetry.update();
         }
+        drive.setPoseEstimate(startPose);
         drive.followTrajectorySequence(toShippingHub);
         drive.followTrajectorySequence(toCarossel);
         drive.followTrajectorySequence(toArmazem);
