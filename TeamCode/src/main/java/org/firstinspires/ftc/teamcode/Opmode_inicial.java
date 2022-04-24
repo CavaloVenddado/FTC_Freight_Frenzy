@@ -128,8 +128,9 @@ public class Opmode_inicial extends LinearOpMode {
         motorCotovelo.setTargetPosition(0);
         motorCotovelo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorOmbro.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorOmbro.setVelocity(600); //600               08-04   800
-        motorCotovelo.setVelocity(800); //500           08-04   1000
+        motorOmbro.setVelocity(600); //(MAX VEL 2800)
+        motorCotovelo.setVelocity(600); //(MAX VEL 600)
+        motorCotovelo.setCurrentAlert(4.4, CurrentUnit.AMPS);//current limit
         motorCotovelo.setVelocityPIDFCoefficients(40.00, 0, 0, 13.6);
         motorOmbro.setVelocityPIDFCoefficients(14.26, 0.1, 0, 22.6);
         /*
@@ -165,13 +166,13 @@ public class Opmode_inicial extends LinearOpMode {
             if (gamepad1.b == true) {
                 Velocidade_Carrossel = 1500;
                 Carrossel.setVelocity(Velocidade_Carrossel);
-                tempodegiro.reset();
-                if(tempodegiro.seconds() > 3){
-                    Velocidade_Carrossel = 3000;
+                if(tempodegiro.seconds() > 1.5){
+                    Velocidade_Carrossel = 2800;
                     Carrossel.setVelocity(Velocidade_Carrossel);
                 }
             }
             else {
+                tempodegiro.reset();
                 Carrossel.setVelocity(0);
                 Velocidade_Carrossel = 0;
             }
