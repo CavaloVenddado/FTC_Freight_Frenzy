@@ -128,8 +128,8 @@ public class Opmode_inicial extends LinearOpMode {
         motorCotovelo.setTargetPosition(0);
         motorCotovelo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorOmbro.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorOmbro.setVelocity(600); //(MAX VEL 2800)
-        motorCotovelo.setVelocity(600); //(MAX VEL 600)
+        motorOmbro.setVelocity(1200); //(MAX VEL 2800)
+        motorCotovelo.setVelocity(500); //(MAX VEL 600)
         motorCotovelo.setCurrentAlert(4.4, CurrentUnit.AMPS);//current limit
         motorCotovelo.setVelocityPIDFCoefficients(40.00, 0, 0, 13.6);
         motorOmbro.setVelocityPIDFCoefficients(14.26, 0.1, 0, 22.6);
@@ -172,7 +172,6 @@ public class Opmode_inicial extends LinearOpMode {
                 }
             }
             else {
-                tempodegiro.reset();
                 Carrossel.setVelocity(0);
                 Velocidade_Carrossel = 0;
             }
@@ -237,29 +236,30 @@ public class Opmode_inicial extends LinearOpMode {
             }
 
             if (gamepad2.a == true){
-                phi = Math.toRadians(260);
-                PosX = -0.1;
-                PosY = 0.01;
+                phi = Math.toRadians(249);
+                PosX = -0.2;
+                PosY = -0.006;
             }
             if (gamepad2.x == true){
-                phi = Math.toRadians(254);
+                phi = Math.toRadians(260.5);
                 PosX = -0.1;
-                PosY = 0.089;
+                PosY = 0.022;
             }
+
             if (gamepad2.y == true){
                 phi = Math.toRadians(256);//246
                 PosX = 0.0212;//-0.123
                 PosY = 0.1798;//0.227
             }
             if (gamepad2.b == true){
-                phi = Math.toRadians(222);//230
-                PosX = -0.04;//-0.17
-                PosY = 0.31;//0.338
+                phi = Math.toRadians(246.9);//230
+                PosX = -0.0278;//-0.17
+                PosY = 0.297;//0.338
             }
             if (gamepad2.dpad_right == true) {
-                phi = Math.toRadians(295.9083);
-                PosX = -0.06;
-                PosY = -0.02;
+                phi = Math.toRadians(295.9);
+                PosX = -0.05;
+                PosY = -0.0335;
                 //motorOmbro.setVelocity(-800); //wtf
             }
             if (gamepad2.dpad_left == true) {
@@ -270,12 +270,16 @@ public class Opmode_inicial extends LinearOpMode {
 
             braco2.setPos(PosX, PosY, phi);
 
-
-
             //aplicar posições no robo
             double ombro = braco2.getTe1();
             double cotovelo = braco2.getTe2();
             double pulso = Math.toRadians(180) - braco2.getTe3();
+            if(pulso < 0){
+                pulso = 1;
+            }
+            if(pulso > 180){
+                pulso = 180;
+            }
             if (cotovelo != Double.NaN && cotovelo > Math.toRadians(0) && cotovelo < Math.toRadians(180)) {
                 motorCotovelo.setTargetPosition((int) (cotovelo * fatorCotovelo));
             }
