@@ -128,11 +128,11 @@ public class Opmode_inicial extends LinearOpMode {
         motorCotovelo.setTargetPosition(0);
         motorCotovelo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorOmbro.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorOmbro.setVelocity(1200); //(MAX VEL 2800)
+        motorOmbro.setVelocity(2000); //(MAX VEL 2800)
         motorCotovelo.setVelocity(500); //(MAX VEL 600)
         motorCotovelo.setCurrentAlert(4.4, CurrentUnit.AMPS);//current limit
         motorCotovelo.setVelocityPIDFCoefficients(40.00, 0, 0, 13.6);
-        motorOmbro.setVelocityPIDFCoefficients(14.26, 0.1, 0, 22.6);
+        motorOmbro.setVelocityPIDFCoefficients(1, 0, 1, 25.6);
         /*
         Motor Cotovelo   PIDF = 40.00 , 0 , 0 , 13.6
         Motor Ombro      PIDF = 14.26 , 0.1 , 5 , 22.6
@@ -226,14 +226,6 @@ public class Opmode_inicial extends LinearOpMode {
             if (phi > 280) {
                 phi = 280;
             }
-            if (gamepad2.dpad_down){
-                motorOmbro.setVelocity(400);
-                motorCotovelo.setVelocity(600);
-            }
-            if (gamepad2.dpad_up) {
-                motorOmbro.setVelocity(600);
-                motorCotovelo.setVelocity(800);
-            }
 
             if (gamepad2.a == true){
                 phi = Math.toRadians(249);
@@ -274,11 +266,11 @@ public class Opmode_inicial extends LinearOpMode {
             double ombro = braco2.getTe1();
             double cotovelo = braco2.getTe2();
             double pulso = Math.toRadians(180) - braco2.getTe3();
-            if(pulso < 0){
-                pulso = 1;
+            if(pulso < Math.toRadians(0)){
+                pulso = Math.toRadians(0);
             }
-            if(pulso > 180){
-                pulso = 180;
+            if(pulso > Math.toRadians(180)){
+                pulso = Math.toRadians(180);
             }
             if (cotovelo != Double.NaN && cotovelo > Math.toRadians(0) && cotovelo < Math.toRadians(180)) {
                 motorCotovelo.setTargetPosition((int) (cotovelo * fatorCotovelo));
@@ -290,8 +282,6 @@ public class Opmode_inicial extends LinearOpMode {
             if (pulso != Double.NaN && pulso*fatorPulso >= 0 && pulso*fatorPulso <= 1){
                 servoPulso.setPosition(pulso*fatorPulso);
             }
-            // Choose to drive using either Tank Mode, or POV Mode
-            // Comment out the method that's not used.  The default below is POV.
 
             if (gamepad2.right_bumper == true){
                 servoGarra.setPosition(0);
