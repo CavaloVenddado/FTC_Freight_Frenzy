@@ -49,7 +49,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-@Autonomous(name="Hamburauto_Red", group="Auto")
+@Autonomous(name="Hamburauto-A-Red", group="Auto")
 public class AutoNH_A_Red extends LinearOpMode {
     OpenCvCamera camera;
     private DcMotorEx Carrossel = null;
@@ -163,12 +163,12 @@ public class AutoNH_A_Red extends LinearOpMode {
             drive.followTrajectorySequence(deliverLower);// special sequence for lower traj
         }else if(analysis == 2){
             drive.followTrajectorySequence(toShippingHub);
-            setArm(-0.1, 0.022, Math.toRadians(260.5));//meio
-            sleep(500);
+            setArm(-0.15, 0.05, Math.toRadians(260.5));//meio
+            sleep(2000);
         }else if(analysis == 3){
             drive.followTrajectorySequence(toShippingHub);
             setArm(0.0212, 0.1798, Math.toRadians(256));//cima
-            sleep(500);
+            sleep(2000);
         }
         openClaw();
         sleep(2000);

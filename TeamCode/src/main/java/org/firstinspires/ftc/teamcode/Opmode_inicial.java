@@ -163,17 +163,14 @@ public class Opmode_inicial extends LinearOpMode {
         PosX = 0.1;
         phi = Math.toRadians(270);
         while (opModeIsActive()) {
-            if (gamepad1.b == true) {
-                Velocidade_Carrossel = 1500;
-                Carrossel.setVelocity(Velocidade_Carrossel);
-                if(tempodegiro.seconds() > 1.5){
-                    Velocidade_Carrossel = 2800;
-                    Carrossel.setVelocity(Velocidade_Carrossel);
-                }
+            if (gamepad1.x == true) {
+                Carrossel.setVelocity(2800);
+            }
+            else if (gamepad1.b == true) {
+                Carrossel.setVelocity(-2800);
             }
             else {
                 Carrossel.setVelocity(0);
-                Velocidade_Carrossel = 0;
             }
             /*
             Declaração de variaveis referentes à movimentação das rodas.
@@ -230,7 +227,7 @@ public class Opmode_inicial extends LinearOpMode {
             if (gamepad2.a == true){
                 phi = Math.toRadians(249);
                 PosX = -0.2;
-                PosY = -0.006;
+                PosY = -0.023;
             }
             if (gamepad2.x == true){
                 phi = Math.toRadians(260.5);
@@ -240,13 +237,13 @@ public class Opmode_inicial extends LinearOpMode {
 
             if (gamepad2.y == true){
                 phi = Math.toRadians(256);//246
-                PosX = 0.0212;//-0.123
+                PosX = -0.115;//-0.123
                 PosY = 0.1798;//0.227
             }
             if (gamepad2.b == true){
                 phi = Math.toRadians(246.9);//230
-                PosX = -0.0278;//-0.17
-                PosY = 0.297;//0.338
+                PosX = -0.2038;//-0.17
+                PosY = 0.329;//0.338
             }
             if (gamepad2.dpad_right == true) {
                 phi = Math.toRadians(295.9);

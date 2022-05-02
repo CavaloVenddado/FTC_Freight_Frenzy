@@ -49,8 +49,8 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-@Autonomous(name="Hamburauto-A-Patrola-Red", group="Auto")
-public class AutoNH_A_Patrola_Red extends LinearOpMode {
+@Autonomous(name="Hamburauto-B-Blue", group="Auto")
+public class AutoNH_B_Blue extends LinearOpMode {
     OpenCvCamera camera;
     private DcMotorEx Carrossel = null;
     private DcMotorEx motorOmbro = null;
@@ -115,29 +115,32 @@ public class AutoNH_A_Patrola_Red extends LinearOpMode {
         //init RR
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        Pose2d startPose = new Pose2d(-41,-62, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(15,62, Math.toRadians(270));
 
         //start trajectory
         TrajectorySequence toShippingHub = drive.trajectorySequenceBuilder(startPose)
-                .splineTo(new Vector2d(-15,-48), Math.toRadians(90))
+                .splineTo(new Vector2d(-12,45), Math.toRadians(270))
                 .build();
-        TrajectorySequence toCarossel = drive.trajectorySequenceBuilder(new Pose2d(-15,-48,Math.toRadians(90)))
+        /*
+        TrajectorySequence toCarossel = drive.trajectorySequenceBuilder(new Pose2d(-12,-45,Math.toRadians(90)))
                 .splineToLinearHeading(new Pose2d(-20,-50, Math.toRadians(0)), Math.toRadians(90))
-                .strafeTo(new Vector2d(-55,-55))
-                .addTemporalMarker(() -> {Carrossel.setPower(-1);})
+                .strafeTo(new Vector2d(-60,-55))
+                .addTemporalMarker(() -> {Carrossel.setPower(1);})
                 .waitSeconds(3)
                 .addTemporalMarker(() -> {Carrossel.setPower(0);})
                 .build();
-        TrajectorySequence toArmazem = drive.trajectorySequenceBuilder(new Pose2d(-55,-55,Math.toRadians(0)))
-                .strafeTo(new Vector2d(-50,-60))
-                .strafeTo(new Vector2d(0,-45))
-                .strafeTo(new Vector2d(30,-40))
+
+         */
+        TrajectorySequence toArmazem = drive.trajectorySequenceBuilder(new Pose2d(-12,45,Math.toRadians(270)))
+                .splineTo(new Vector2d(0,50), Math.toRadians(0))
+                .strafeTo(new Vector2d(0,61))
+                .strafeTo(new Vector2d(40,62))
                 .build();
         TrajectorySequence deliverLower = drive.trajectorySequenceBuilder(startPose)
-                .splineTo(new Vector2d(-15,-55), Math.toRadians(90))
-                .addTemporalMarker(() -> {setArm(-0.2, -0.025, Math.toRadians(249));})//posição baixa
+                .splineTo(new Vector2d(-12,55), Math.toRadians(270))
+                .addTemporalMarker(() -> {setArm(-0.2, 0.0, Math.toRadians(249));})//posição baixa
                 .waitSeconds(1)
-                .strafeTo(new Vector2d(-15,-48))
+                .strafeTo(new Vector2d(-12,45))
                 .build();
 
         //setArm(0.1, -0.01, Math.toRadians(270));
@@ -150,7 +153,6 @@ public class AutoNH_A_Patrola_Red extends LinearOpMode {
             telemetry.addData("CurrentOmbro: ", motorOmbro.getCurrent(CurrentUnit.AMPS));
             telemetry.addData("CurrentCotovelo: ", motorCotovelo.getCurrent(CurrentUnit.AMPS));
             telemetry.update();
-
         }
         int analysis = 0;
         while(analysis == 0 && isStarted()){
@@ -163,17 +165,17 @@ public class AutoNH_A_Patrola_Red extends LinearOpMode {
             drive.followTrajectorySequence(deliverLower);// special sequence for lower traj
         }else if(analysis == 2){
             drive.followTrajectorySequence(toShippingHub);
-            setArm(-0.1, 0.022, Math.toRadians(260.5));//meio
-            sleep(500);
+            setArm(-0.15, 0.07, Math.toRadians(260.5));//meio
+            sleep(2000);
         }else if(analysis == 3){
             drive.followTrajectorySequence(toShippingHub);
-            setArm(0.0212, 0.1798, Math.toRadians(256));//cima
-            sleep(500);
+            setArm(-0.2, 0.28, Math.toRadians(256));//cima
+            sleep(2000);
         }
         openClaw();
         sleep(2000);
         setArm(0.1, -0.01, Math.toRadians(270));
-        drive.followTrajectorySequence(toCarossel);
+        //drive.followTrajectorySequence(toCarossel);
         drive.followTrajectorySequence(toArmazem);
         //start
     }

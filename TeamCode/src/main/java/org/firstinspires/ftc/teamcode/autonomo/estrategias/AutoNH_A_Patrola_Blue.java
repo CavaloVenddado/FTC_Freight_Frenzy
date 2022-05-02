@@ -49,7 +49,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-@Autonomous(name="Hamburauto_Patrola_Blue", group="Auto")
+@Autonomous(name="Hamburauto-A-Patrola-Blue", group="Auto")
 public class AutoNH_A_Patrola_Blue extends LinearOpMode {
     OpenCvCamera camera;
     private DcMotorEx Carrossel = null;
