@@ -40,7 +40,7 @@ public class T265Localizer implements Localizer {
         rawPose = new Pose2d();
 
         if (slamra == null) {
-            slamra = new T265Camera(new Transform2d(new Translation2d(-0.185,0), new Rotation2d(0)), 0, hardwareMap.appContext);
+            slamra = new T265Camera(new Transform2d(new Translation2d(-0.185,-0.02), new Rotation2d(0)), 0, hardwareMap.appContext);// x: -0.185
             RobotLog.d("Created Realsense Object");
         }
         try {
