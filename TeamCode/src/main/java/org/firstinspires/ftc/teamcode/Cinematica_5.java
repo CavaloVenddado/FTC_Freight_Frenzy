@@ -6,8 +6,8 @@ public class Cinematica_5 {
      * este codigo realiza a cinemática de um  braço mecanico de 2 eixos utilizando trigonometria
      */
 
-    double a = 0.30; //distancia entre o cotovelo e o pulso
-    double b = 0.33; //distancia entre o ombro e o cotovelo ANTIGA ERA 0.18
+    double a = 0.30; //distancia entre o ombro e o cotovelo
+    double b = 0.33; //distancia entre o cotovelo e o pulso ANTIGA ERA 0.18
     double a3 = 0.12; //tamanho da garra
     private double Te2;
     private double Te1;
