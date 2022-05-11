@@ -72,8 +72,9 @@ public class HSVEdgeRotEstimator extends OpenCvPipeline {
 	private Mat element1 = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new  Size(20,20));
     
     private Mat cameraMatrix;
-    private double tagsizeX = 0.325;
-    private double tagsizeY = 0.26;
+    private Pose pose = null;
+    private double tagsizeX = 0.05;
+    private double tagsizeY = 0.05;
 	
 	public HSVEdgeRotEstimator() {
         constructMatrix();
@@ -107,7 +108,7 @@ public class HSVEdgeRotEstimator extends OpenCvPipeline {
             Imgproc.drawContours(input, contours, i, new Scalar(255, 0, 0), -1);
 			//Imgproc.rectangle (maskedInputMat, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), color, 1);
             //3D SOLVE PNP OPERATION
-            Pose pose = poseFromTrapezoid(rotatedRectFitToContour, cameraMatrix, tagsizeX, tagsizeY);
+            pose = poseFromTrapezoid(rotatedRectFitToContour, cameraMatrix, tagsizeX, tagsizeY);
             drawAxisMarker(input, tagsizeY/2.0, 3, pose.rvec, pose.tvec, cameraMatrix);
         }
 		
@@ -131,6 +132,9 @@ public class HSVEdgeRotEstimator extends OpenCvPipeline {
             Imgproc.line(drawOn, points[i], points[(i+1)%4], lineColor, 1);
             Imgproc.circle(drawOn, points[i], 5, edgeColor);
         }
+    }
+    public Mat getAnalysis(){
+	    return pose.tvec;
     }
     void drawAxisMarker(Mat buf, double length, int thickness, Mat rvec, Mat tvec, Mat cameraMatrix)
     {
