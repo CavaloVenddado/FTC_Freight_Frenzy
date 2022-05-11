@@ -131,7 +131,7 @@ public class Opmode_inicial extends LinearOpMode {
         motorOmbro.setVelocity(2000); //(MAX VEL 2800)
         motorCotovelo.setVelocity(500); //(MAX VEL 600)
         motorCotovelo.setCurrentAlert(4.4, CurrentUnit.AMPS);//current limit
-        motorCotovelo.setVelocityPIDFCoefficients(40.00, 0, 0, 13.6);
+        motorCotovelo.setVelocityPIDFCoefficients(40.00, 0, 0, 42);
         motorOmbro.setVelocityPIDFCoefficients(1, 0, 1, 25.6);
         /*
         Motor Cotovelo   PIDF = 40.00 , 0 , 0 , 13.6
@@ -159,9 +159,9 @@ public class Opmode_inicial extends LinearOpMode {
         Seguencia de enquanto responsavel por operar o atuador do carrosel
         Se o botão b estiver pressionado, o motor irá girar!
          */
-        PosY = -0.01;
-        PosX = 0.1;
-        phi = Math.toRadians(270);
+        PosX = 0.068;
+        PosY = -0.03;
+        phi = Math.toRadians(323.76);
         while (opModeIsActive()) {
             if (gamepad1.x == true) {
                 Carrossel.setVelocity(2800);
@@ -225,9 +225,9 @@ public class Opmode_inicial extends LinearOpMode {
             }
 
             if (gamepad2.a == true){
-                phi = Math.toRadians(249);
-                PosX = -0.2;
-                PosY = -0.023;
+                phi = Math.toRadians(268);
+                PosX = -0.078;
+                PosY = -0.117;
             }
             if (gamepad2.x == true){
                 phi = Math.toRadians(260.5);
@@ -245,16 +245,20 @@ public class Opmode_inicial extends LinearOpMode {
                 PosX = -0.2038;//-0.17
                 PosY = 0.329;//0.338
             }
-            if (gamepad2.dpad_right == true) {
-                phi = Math.toRadians(295.9);
-                PosX = -0.05;
-                PosY = -0.0335;
-                //motorOmbro.setVelocity(-800); //wtf
+            if (gamepad2.dpad_down == true) {
+                phi = Math.toRadians(222.3);
+                PosX = -0.087;
+                PosY = -0.021;
             }
-            if (gamepad2.dpad_left == true) {
-                PosY = -0.01;
-                PosX = 0.1;
-                phi = Math.toRadians(270);
+            if (gamepad2.dpad_right == true) {
+                PosX = 0.068;
+                PosY = -0.03;
+                phi = Math.toRadians(323.76);
+            }
+            if(gamepad2.dpad_left){
+                PosX = -0.137;
+                PosY = 0.029;
+                phi = Math.toRadians(200);
             }
 
             braco2.setPos(PosX, PosY, phi);

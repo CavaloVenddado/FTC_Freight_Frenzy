@@ -7,7 +7,7 @@ public class Cinematica_5 {
      */
 
     double a = 0.30; //distancia entre o cotovelo e o pulso
-    double b = 0.18; //distancia entre o ombro e o cotovelo
+    double b = 0.33; //distancia entre o ombro e o cotovelo ANTIGA ERA 0.18
     double a3 = 0.12; //tamanho da garra
     private double Te2;
     private double Te1;
