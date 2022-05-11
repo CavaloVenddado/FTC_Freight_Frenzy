@@ -164,19 +164,23 @@ public class AutoNH_B_Patrola_Blue extends LinearOpMode {
         // coloca o braço na posição desejada
         if(analysis == 1){
             drive.followTrajectorySequence(deliverLower);// special sequence for lower traj
+            openClaw();
+            sleep(2000);
         }else if(analysis == 2){
             drive.followTrajectorySequence(toShippingHub);
-            setArm(-0.1, 0.022, Math.toRadians(260.5));//meio
-            sleep(1500);
-            setArm(0.1, 0.022, Math.toRadians(260.5));
+            setArm(-0.15, 0.07, Math.toRadians(260.5));//meio
+            sleep(2000);
+            openClaw();
+            sleep(2000);
         }else if(analysis == 3){
             drive.followTrajectorySequence(toShippingHub);
-            setArm(-0.17, 0.2, Math.toRadians(246));//cima
-            sleep(1500);
-            setArm(0.4, 0.2, Math.toRadians(246));
+            setArm(-0.2, 0.28, Math.toRadians(256));//cima
+            sleep(2000);
+            openClaw();
+            sleep(500);
+            setArm(0.1, 0.28, Math.toRadians(256));//cima
+            sleep(2000);
         }
-        openClaw();
-        sleep(500);
         setArm(0.1, -0.01, Math.toRadians(270));
         //drive.followTrajectorySequence(toCarossel);
         drive.followTrajectorySequence(toArmazem);

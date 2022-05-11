@@ -160,7 +160,6 @@ public class AutoNH_B_Red extends LinearOpMode {
             analysis = colorfilter.getAnalysis();
         }
         drive.setPoseEstimate(startPose);
-        sleep(4000);
         // coloca o braço na posição desejada
         if(analysis == 1){
             drive.followTrajectorySequence(deliverLower);// special sequence for lower traj
