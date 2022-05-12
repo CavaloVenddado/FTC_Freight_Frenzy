@@ -320,5 +320,6 @@ public class SampleMecanumDrive extends MecanumDrive {
     }
     public void breakFollowing() {
         trajectorySequenceRunner.breakFollowing();
+        setDrivePower(new Pose2d());
     }
 }
