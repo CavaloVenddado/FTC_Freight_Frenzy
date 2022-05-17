@@ -12,7 +12,7 @@ public class Cinematica_5 {
     private double Te2;
     private double Te1;
     private double Te3;
-    private double delta;
+    private double delta;//Quadrado da Hipotenusa entre ombro e pulso
     private double c2;
     private double s2;
     private double s1;

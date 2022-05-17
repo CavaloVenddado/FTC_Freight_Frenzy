@@ -170,7 +170,7 @@ public class TestGrabCube extends LinearOpMode {
         TrajectorySequence goBack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                 .setVelConstraint(
                         (v, pose2d, pose2d1, pose2d2) -> DriveConstants.MAX_VEL)
-                .strafeTo(new Vector2d())
+                .strafeTo(new Vector2d(startingPose.getX(), startingPose.getY()))
                 .build();
 
         telemetry.addData("Voltando...", "será?");

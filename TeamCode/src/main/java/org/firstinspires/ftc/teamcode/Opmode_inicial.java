@@ -255,11 +255,17 @@ public class Opmode_inicial extends LinearOpMode {
                 PosY = -0.03;
                 phi = Math.toRadians(323.76);
             }
-            if(gamepad2.dpad_left){
+            if(gamepad2.dpad_up){
                 PosX = -0.137;
                 PosY = 0.029;
                 phi = Math.toRadians(200);
             }
+            if(gamepad2.dpad_left){
+                PosX = -0.174;
+                PosY = -0.155;
+                phi = Math.toRadians(268);
+            }
+
 
             braco2.setPos(PosX, PosY, phi);
 
