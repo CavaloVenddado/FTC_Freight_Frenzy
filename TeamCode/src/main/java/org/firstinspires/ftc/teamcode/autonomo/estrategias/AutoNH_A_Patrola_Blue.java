@@ -168,7 +168,7 @@ public class AutoNH_A_Patrola_Blue extends LinearOpMode {
         }
         openClaw();
         sleep(2000);
-        setArm(0.1, -0.01, Math.toRadians(270));
+        setArm(-0.137, 0.029, Math.toRadians(200));
         drive.followTrajectorySequence(toCarossel);
         drive.followTrajectorySequence(toArmazem);
         //start
