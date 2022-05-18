@@ -17,8 +17,8 @@ public class Cinematica_5 {
     private double s2;
     private double s1;
     private double c1;
-    private double wx;
-    private double wy;
+    private double wx; //posição do pulso em x
+    private double wy; //posição do pulso e y
     /*
         px: posição da ponta do atuador em x
         py: posição da ponta do atuador em y
