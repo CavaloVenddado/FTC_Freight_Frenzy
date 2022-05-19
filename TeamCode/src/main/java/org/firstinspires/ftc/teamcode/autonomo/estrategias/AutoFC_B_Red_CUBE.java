@@ -262,8 +262,7 @@ public class AutoFC_B_Red_CUBE extends LinearOpMode {
         sleep(300);
         setArm(-0.137, 0.029, Math.toRadians(200));
         TrajectorySequence goBack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .setVelConstraint(
-                        (v, pose2d, pose2d1, pose2d2) -> DriveConstants.MAX_VEL)
+                .resetVelConstraint()
                 .strafeTo(new Vector2d(startingPose.getX(), startingPose.getY()))
                 .build();
 
