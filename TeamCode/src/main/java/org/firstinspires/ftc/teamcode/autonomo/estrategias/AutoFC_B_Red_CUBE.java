@@ -126,10 +126,11 @@ public class AutoFC_B_Red_CUBE extends LinearOpMode {
         //init RR
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        Pose2d startPose = new Pose2d(7,-62, Math.toRadians(90));
+        final Pose2d startPose = new Pose2d(7,-62, Math.toRadians(90));
+        final Pose2d hubPose = new Pose2d(-12,-47, Math.toRadians(90));
 
         TrajectorySequence toShippingHub = drive.trajectorySequenceBuilder(startPose)
-                .splineTo(new Vector2d(-12,-47), Math.toRadians(90))
+                .splineTo(new Vector2d(hubPose.getX(),hubPose.getY()), hubPose.getHeading())
                 .build();
 
         TrajectorySequence toArmazem = drive.trajectorySequenceBuilder(toShippingHub.end())
@@ -143,15 +144,16 @@ public class AutoFC_B_Red_CUBE extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(0,-63, Math.toRadians(0)))
                 //.strafeTo(new Vector2d(0,-50))
                 .setReversed(false)
-                .lineToLinearHeading(new Pose2d(-12,-47, Math.toRadians(90)))
+                .lineToLinearHeading(hubPose)
                 .build();
 
         TrajectorySequence deliverLower = drive.trajectorySequenceBuilder(startPose)
                 .splineTo(new Vector2d(-12,-55), Math.toRadians(90))
-                .addTemporalMarker(() -> {setArm(-0.2, 0.0, Math.toRadians(249));})//posição baixa
+                .addTemporalMarker(() -> setArm(-0.2, 0.0, Math.toRadians(249)))//posição baixa
                 .waitSeconds(1)
-                .strafeTo(new Vector2d(-12,-47))
+                .strafeTo(new Vector2d(hubPose.getX(),hubPose.getY()))
                 .build();
+
         TrajectorySequence vazar = drive.trajectorySequenceBuilder(toShippingHub.end())
                 .lineToLinearHeading(new Pose2d(0, -62, Math.toRadians(0)))
                 .strafeTo(new Vector2d(40,-63))
