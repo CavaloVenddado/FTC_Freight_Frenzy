@@ -298,28 +298,28 @@ public class Opmode_inicial extends LinearOpMode {
             }
 
             // Sequencia responsavel por exibir no monitor os valores importantes do codigo.
-            telemetry.addLine("Opmode")
-                    .addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addLine("Opmode");
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
 
-            telemetry.addLine("Cinemática INPUT")
-                    .addData("Posição X", PosX)
-                    .addData("Posição Y", PosY)
-                    .addData("PHI", Math.toDegrees(phi));
+            telemetry.addLine("Cinemática INPUT");
+            telemetry.addData("Posição X", PosX);
+            telemetry.addData("Posição Y", PosY);
+            telemetry.addData("PHI", Math.toDegrees(phi));
 
-            telemetry.addLine("Cinemática OUTPUT")
-                    .addData("Te1", Math.toDegrees(braco2.getTe1()))
-                    .addData("Te2", Math.toDegrees(braco2.getTe2()))
-                    .addData("Te3", Math.toDegrees(braco2.getTe3()));
+            telemetry.addLine("Cinemática OUTPUT");
+            telemetry.addData("Te1", Math.toDegrees(braco2.getTe1()));
+            telemetry.addData("Te2", Math.toDegrees(braco2.getTe2()));
+            telemetry.addData("Te3", Math.toDegrees(braco2.getTe3()));
 
-            telemetry.addLine("Motores - OMBRO")
-                    .addData("Posição Motor Ombro",motorOmbro.getCurrentPosition())
-                    .addData("Target Position Ombro", motorOmbro.getTargetPosition())
-                    .addData("Current Ombro", motorOmbro.getCurrent(CurrentUnit.AMPS));
+            telemetry.addLine("Motores - OMBRO");
+            telemetry.addData("Posição Motor Ombro",motorOmbro.getCurrentPosition());
+            telemetry.addData("Target Position Ombro", motorOmbro.getTargetPosition());
+            telemetry.addData("Current Ombro", motorOmbro.getCurrent(CurrentUnit.AMPS));
 
-            telemetry.addLine("Motores - COTOVELO")
-                    .addData("Posição Motor Cotovelo",motorCotovelo.getCurrentPosition())
-                    .addData("Target Position Cotovelo", motorCotovelo.getTargetPosition())
-                    .addData("Current Cotovelo", motorCotovelo.getCurrent(CurrentUnit.AMPS));
+            telemetry.addLine("Motores - COTOVELO");
+            telemetry.addData("Posição Motor Cotovelo",motorCotovelo.getCurrentPosition());
+            telemetry.addData("Target Position Cotovelo", motorCotovelo.getTargetPosition());
+            telemetry.addData("Current Cotovelo", motorCotovelo.getCurrent(CurrentUnit.AMPS));
 
             telemetry.update();
         }
