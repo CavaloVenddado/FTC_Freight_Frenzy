@@ -87,7 +87,7 @@ public class AutoFC_B_Red_CUBE extends LinearOpMode {
         motorOmbro.setVelocity(2000); //(MAX VEL 2800)
         motorCotovelo.setVelocity(300); //(MAX VEL 600)
         motorCotovelo.setCurrentAlert(4.4, CurrentUnit.AMPS);//current limit
-        motorCotovelo.setVelocityPIDFCoefficients(40.00, 0, 0, 13.6);
+        motorCotovelo.setVelocityPIDFCoefficients(40.00, 0, 0, 42);
         motorOmbro.setVelocityPIDFCoefficients(1, 0, 1, 25.6);
         motorOmbro.setDirection(DcMotorEx.Direction.REVERSE); //ANTI QUEBRA OMBRO
 
@@ -95,7 +95,7 @@ public class AutoFC_B_Red_CUBE extends LinearOpMode {
         servoGarra = hardwareMap.get(Servo.class,"ServoGarra");
 
         servoPulso.setPosition(1);
-        servoGarra.setPosition(1);
+        closeClaw();
 
         //distance sensor
         colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color");
@@ -126,41 +126,39 @@ public class AutoFC_B_Red_CUBE extends LinearOpMode {
         //init RR
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
+        Pose2d startPose = new Pose2d(7,-62, Math.toRadians(90));
 
         TrajectorySequence toShippingHub = drive.trajectorySequenceBuilder(startPose)
-                .splineTo(new Vector2d(-12,-45), Math.toRadians(90))
-                .build();
-        /*
-        TrajectorySequence toCarossel = drive.trajectorySequenceBuilder(new Pose2d(-12,-45,Math.toRadians(90)))
-                .splineToLinearHeading(new Pose2d(-20,-50, Math.toRadians(0)), Math.toRadians(90))
-                .strafeTo(new Vector2d(-60,-55))
-                .addTemporalMarker(() -> {Carrossel.setPower(1);})
-                .waitSeconds(3)
-                .addTemporalMarker(() -> {Carrossel.setPower(0);})
+                .splineTo(new Vector2d(-12,-47), Math.toRadians(90))
                 .build();
 
-         */
         TrajectorySequence toArmazem = drive.trajectorySequenceBuilder(toShippingHub.end())
-                .splineTo(new Vector2d(0,-50), Math.toRadians(0))
-                .strafeTo(new Vector2d(0,-61))
-                .strafeTo(new Vector2d(45,-62))
+                .lineToLinearHeading(new Pose2d(0, -62, Math.toRadians(0)))
+                //.strafeTo(new Vector2d(0,-62))
+                .strafeTo(new Vector2d(30,-63))
                 .build();
+
         TrajectorySequence reverseArmazem = drive.trajectorySequenceBuilder(toArmazem.end())
                 .setReversed(true)
-                .strafeTo(new Vector2d(0,-61))
-                .strafeTo(new Vector2d(0,-50))
+                .lineToLinearHeading(new Pose2d(0,-63, Math.toRadians(0)))
+                //.strafeTo(new Vector2d(0,-50))
                 .setReversed(false)
-                .splineTo(new Vector2d(-12,-45), Math.toRadians(0))
+                .lineToLinearHeading(new Pose2d(-12,-47, Math.toRadians(90)))
                 .build();
+
         TrajectorySequence deliverLower = drive.trajectorySequenceBuilder(startPose)
                 .splineTo(new Vector2d(-12,-55), Math.toRadians(90))
                 .addTemporalMarker(() -> {setArm(-0.2, 0.0, Math.toRadians(249));})//posição baixa
                 .waitSeconds(1)
-                .strafeTo(new Vector2d(-12,-45))
+                .strafeTo(new Vector2d(-12,-47))
+                .build();
+        TrajectorySequence vazar = drive.trajectorySequenceBuilder(toShippingHub.end())
+                .lineToLinearHeading(new Pose2d(0, -62, Math.toRadians(0)))
+                .strafeTo(new Vector2d(40,-63))
                 .build();
 
         while (!isStarted()){
+            telemetry.addData("Detection results", colorfilter.getAnalysis());telemetry.addData("Posição Motor Ombro: ",motorOmbro.getCurrentPosition());
             telemetry.addData("dist", distSensor.getDistance(DistanceUnit.CM));
             telemetry.addData("Posição Motor Ombro: ",motorOmbro.getCurrentPosition());
             telemetry.addData("Posição Motor Cotovelo: ",motorCotovelo.getCurrentPosition());
@@ -191,11 +189,11 @@ public class AutoFC_B_Red_CUBE extends LinearOpMode {
         }else if(analysis == 3){
             drive.followTrajectorySequence(toShippingHub);
             setArm(-0.2, 0.28, Math.toRadians(256));//cima
-            sleep(2000);
+            sleep(1500);
             openClaw();
+            sleep(300);
+            setArm(0.1, 0.28, Math.toRadians(256));//cima pra tras
             sleep(500);
-            setArm(0.1, 0.28, Math.toRadians(256));//cima
-            sleep(2000);
         }
         setArm(-0.137, 0.029, Math.toRadians(200));
         //drive.followTrajectorySequence(toCarossel);
@@ -212,13 +210,16 @@ public class AutoFC_B_Red_CUBE extends LinearOpMode {
         drive.followTrajectorySequence(reverseArmazem);
         //colocar no mais alto
         setArm(-0.2, 0.28, Math.toRadians(256));//cima
-        sleep(2000);
+        sleep(1500);
         openClaw();
-        sleep(500);
+        sleep(300);
         setArm(0.1, 0.28, Math.toRadians(256));//cima
-        sleep(2000);
+        sleep(500);
         //voltar pro armazém
-        drive.followTrajectorySequence(toArmazem);
+        setArm(-0.137, 0.029, Math.toRadians(200));
+        sleep(1000);
+        drive.followTrajectorySequence(vazar);
+        sleep(1000);
     }
 
     /**
@@ -263,7 +264,7 @@ public class AutoFC_B_Red_CUBE extends LinearOpMode {
         setArm(-0.137, 0.029, Math.toRadians(200));
         TrajectorySequence goBack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                 .resetVelConstraint()
-                .strafeTo(new Vector2d(startingPose.getX(), startingPose.getY()))
+                .lineToLinearHeading(startingPose)
                 .build();
 
         telemetry.addData("Voltando...", "será?");
