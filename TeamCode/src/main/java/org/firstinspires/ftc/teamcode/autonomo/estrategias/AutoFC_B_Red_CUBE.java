@@ -149,7 +149,7 @@ public class AutoFC_B_Red_CUBE extends LinearOpMode {
 
         TrajectorySequence deliverLower = drive.trajectorySequenceBuilder(startPose)
                 .splineTo(new Vector2d(-12,-55), Math.toRadians(90))
-                .addTemporalMarker(() -> setArm(-0.2, 0.0, Math.toRadians(249)))//posição baixa
+                .addTemporalMarker(() -> {setArm(-0.2, 0.0, Math.toRadians(249));})//posição baixa
                 .waitSeconds(1)
                 .strafeTo(new Vector2d(hubPose.getX(),hubPose.getY()))
                 .build();
