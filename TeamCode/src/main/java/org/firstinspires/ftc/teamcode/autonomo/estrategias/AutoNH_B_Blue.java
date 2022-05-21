@@ -121,24 +121,16 @@ public class AutoNH_B_Blue extends LinearOpMode {
         TrajectorySequence toShippingHub = drive.trajectorySequenceBuilder(startPose)
                 .splineTo(new Vector2d(-12,45), Math.toRadians(270))
                 .build();
-        /*
-        TrajectorySequence toCarossel = drive.trajectorySequenceBuilder(new Pose2d(-12,-45,Math.toRadians(90)))
-                .splineToLinearHeading(new Pose2d(-20,-50, Math.toRadians(0)), Math.toRadians(90))
-                .strafeTo(new Vector2d(-60,-55))
-                .addTemporalMarker(() -> {Carrossel.setPower(1);})
-                .waitSeconds(3)
-                .addTemporalMarker(() -> {Carrossel.setPower(0);})
+
+        TrajectorySequence toArmazem = drive.trajectorySequenceBuilder(toShippingHub.end())
+                .lineToLinearHeading(new Pose2d(0, 64, Math.toRadians(0)))
+                //.strafeTo(new Vector2d(0,-62))
+                .strafeTo(new Vector2d(45,64.5))
                 .build();
 
-         */
-        TrajectorySequence toArmazem = drive.trajectorySequenceBuilder(new Pose2d(-12,45,Math.toRadians(270)))
-                .splineTo(new Vector2d(0,50), Math.toRadians(0))
-                .strafeTo(new Vector2d(0,62))
-                .strafeTo(new Vector2d(45,63))
-                .build();
         TrajectorySequence deliverLower = drive.trajectorySequenceBuilder(startPose)
                 .splineTo(new Vector2d(-12,55), Math.toRadians(270))
-                .addTemporalMarker(() -> {setArm(-0.2, 0.0, Math.toRadians(249));})//posição baixa
+                .addTemporalMarker(() -> {setArm(-0.078, -0.117, Math.toRadians(268));})//posição baixa
                 .waitSeconds(1)
                 .strafeTo(new Vector2d(-12,45))
                 .build();
