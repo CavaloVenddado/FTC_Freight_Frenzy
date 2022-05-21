@@ -37,11 +37,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 /**
@@ -74,12 +78,15 @@ public class Opmode_inicial extends LinearOpMode {
     private DcMotorEx motorCotovelo = null;
     private Servo servoPulso = null;
     private Servo servoGarra = null;
+    private Servo servobandeira = null;
     private double PosY;
     private double PosX;
     private double phi;
     private DigitalChannel botao1ombro;
     private DigitalChannel botao2cotovelo;
     private int Velocidade_Carrossel;
+    NormalizedColorSensor colorSensor;
+    DistanceSensor distSensor;
     private ElapsedTime tempodegiro = new ElapsedTime();
 
     /*
@@ -90,6 +97,7 @@ public class Opmode_inicial extends LinearOpMode {
     private double fatorCotovelo = (-264/ Math.toRadians(180)); //-264 = 180°
     private double fatorOmbro = (5600 / Math.toRadians(180)); //5600 = 180°
     private double fatorPulso = (1 / Math.toRadians(180));
+    private boolean lastDetectedCube = false;
     @Override
     public void runOpMode() {
 
@@ -122,6 +130,9 @@ public class Opmode_inicial extends LinearOpMode {
         botao1ombro.setMode(DigitalChannel.Mode.INPUT);
         botao2cotovelo.setMode(DigitalChannel.Mode.INPUT);
 
+        colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color");
+        distSensor = ((DistanceSensor) colorSensor);
+
         motorCotovelo = hardwareMap.get(DcMotorEx.class,"Cotovelo");
         motorOmbro = hardwareMap.get(DcMotorEx.class,"Ombro");
         motorOmbro.setTargetPosition(0);
@@ -139,6 +150,7 @@ public class Opmode_inicial extends LinearOpMode {
          */
         servoPulso = hardwareMap.get(Servo.class,"ServoPunho");
         servoGarra = hardwareMap.get(Servo.class,"ServoGarra");
+        servobandeira = hardwareMap.get(Servo.class,"ServoBandeira");
         servoPulso.setPosition(1);
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -268,6 +280,20 @@ public class Opmode_inicial extends LinearOpMode {
 
 
             braco2.setPos(PosX, PosY, phi);
+            double dist = distSensor.getDistance(DistanceUnit.CM);
+            if((!Double.isNaN(dist)) && dist < 10){ //detectou cubo?
+                //erguida
+                servobandeira.setPosition(1);
+                if (lastDetectedCube == false)
+                {
+                    gamepad2.rumble(0,1.0,300);
+                }
+                lastDetectedCube = true;
+            }else{
+                lastDetectedCube = false;
+                //abaixada
+                servobandeira.setPosition(0);
+            }
 
             //aplicar posições no robo
             double ombro = braco2.getTe1();
