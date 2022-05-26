@@ -189,7 +189,7 @@ public class AutoFC_B_Blue_CUBE extends LinearOpMode {
             sleep(2000);
         }else if(analysis == 3){
             drive.followTrajectorySequence(toShippingHub);
-            setArm(-0.2, 0.28, Math.toRadians(256));//cima
+            setArm(-0.2, 0.28, Math.toRadians(260));//cima
             sleep(1500);
             openClaw();
             sleep(300);
@@ -210,7 +210,7 @@ public class AutoFC_B_Blue_CUBE extends LinearOpMode {
          */
         drive.followTrajectorySequence(reverseArmazem);
         //colocar no mais alto
-        setArm(-0.2, 0.28, Math.toRadians(256));//cima
+        setArm(-0.2, 0.28, Math.toRadians(260));//cima
         sleep(1500);
         openClaw();
         sleep(300);
