@@ -131,7 +131,8 @@ public class Carossel_A_Red extends LinearOpMode {
         final Pose2d hubPose = new Pose2d(-12,-47, Math.toRadians(90));
 
         TrajectorySequence toCarossel = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-65,-55, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-50,-40, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(-60,-55, Math.toRadians(0)))
                 .addTemporalMarker(() -> {Carrossel.setPower(-0.8);})
                 .waitSeconds(3)
                 .addTemporalMarker(() -> {Carrossel.setPower(0);})
