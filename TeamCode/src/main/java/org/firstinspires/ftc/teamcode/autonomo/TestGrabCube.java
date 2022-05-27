@@ -131,7 +131,10 @@ public class TestGrabCube extends LinearOpMode {
      * goes forward until detected a cube, then closes claw and goes back to param pose.
      */
     private void getACube(SampleMecanumDrive drive, Pose2d startingPose){
-        setArm(0.068, -0.03, Math.toRadians(323.76));
+        motorCotovelo.setTargetPosition(0);
+        motorOmbro.setTargetPosition(0);
+        servoPulso.setPosition(0);
+        servoGarra.setPosition(0.8);
         //create constants
         TrajectoryVelocityConstraint slowSpd = (v, pose2d, pose2d1, pose2d2) -> 10;
 
@@ -160,6 +163,12 @@ public class TestGrabCube extends LinearOpMode {
         }
         drive.breakFollowing();
         drive.update();
+        /*
+        servoPulso.setPosition(0.3);
+        sleep(100);
+        servoPulso.setPosition(0);
+
+         */
         closeClaw();
         telemetry.addData("cubo encontrado!", "wow");
         telemetry.update();

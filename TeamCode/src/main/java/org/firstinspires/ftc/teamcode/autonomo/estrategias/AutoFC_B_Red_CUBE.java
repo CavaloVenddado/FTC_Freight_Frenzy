@@ -87,7 +87,7 @@ public class AutoFC_B_Red_CUBE extends LinearOpMode {
         motorOmbro.setVelocity(2000); //(MAX VEL 2800)
         motorCotovelo.setVelocity(300); //(MAX VEL 600)
         motorCotovelo.setCurrentAlert(4.4, CurrentUnit.AMPS);//current limit
-        motorCotovelo.setVelocityPIDFCoefficients(40.00, 0, 0, 42);
+        motorCotovelo.setVelocityPIDFCoefficients(40.00, 0, 0, 60);
         motorOmbro.setVelocityPIDFCoefficients(1, 0, 1, 25.6);
         motorOmbro.setDirection(DcMotorEx.Direction.REVERSE); //ANTI QUEBRA OMBRO
 
@@ -127,36 +127,36 @@ public class AutoFC_B_Red_CUBE extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         final Pose2d startPose = new Pose2d(7,-62, Math.toRadians(90));
-        final Pose2d hubPose = new Pose2d(-12,-47, Math.toRadians(90));
+        final Pose2d hubPose = new Pose2d(-12,-45, Math.toRadians(90));
 
         TrajectorySequence toShippingHub = drive.trajectorySequenceBuilder(startPose)
-                .splineTo(new Vector2d(hubPose.getX(),hubPose.getY()), hubPose.getHeading())
+                .lineToLinearHeading(hubPose)
                 .build();
 
         TrajectorySequence toArmazem = drive.trajectorySequenceBuilder(toShippingHub.end())
-                .lineToLinearHeading(new Pose2d(0, -62, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(0, -63, Math.toRadians(0)))
                 //.strafeTo(new Vector2d(0,-62))
-                .strafeTo(new Vector2d(30,-63))
+                .strafeTo(new Vector2d(40,-64))
                 .build();
 
         TrajectorySequence reverseArmazem = drive.trajectorySequenceBuilder(toArmazem.end())
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(0,-63, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(0,-64, Math.toRadians(0)))
                 //.strafeTo(new Vector2d(0,-50))
                 .setReversed(false)
                 .lineToLinearHeading(hubPose)
                 .build();
 
         TrajectorySequence deliverLower = drive.trajectorySequenceBuilder(startPose)
-                .splineTo(new Vector2d(-12,-55), Math.toRadians(90))
-                .addTemporalMarker(() -> {setArm(-0.078, -0.117, Math.toRadians(268));})//posição baixa
+                .lineToLinearHeading(new Pose2d(-12,-55, hubPose.getHeading()))
+                .addTemporalMarker(() -> {setArm(-0.2, -0.117, Math.toRadians(268));})//posição baixa
                 .waitSeconds(1)
                 .strafeTo(new Vector2d(hubPose.getX(),hubPose.getY()))
                 .build();
 
         TrajectorySequence vazar = drive.trajectorySequenceBuilder(toShippingHub.end())
-                .lineToLinearHeading(new Pose2d(0, -62, Math.toRadians(0)))
-                .strafeTo(new Vector2d(40,-63))
+                .lineToLinearHeading(new Pose2d(0, -63, Math.toRadians(0)))
+                .strafeTo(new Vector2d(40,-63.5))
                 .build();
 
         while (!isStarted()){
@@ -177,20 +177,20 @@ public class AutoFC_B_Red_CUBE extends LinearOpMode {
         }
         //start
         drive.setPoseEstimate(startPose);
-
+        setArm(-0.137, 0.029, Math.toRadians(200));
         if(analysis == 1){
             drive.followTrajectorySequence(deliverLower);// special sequence for lower traj
             openClaw();
             sleep(2000);
         }else if(analysis == 2){
             drive.followTrajectorySequence(toShippingHub);
-            setArm(-0.15, 0.07, Math.toRadians(260.5));//meio
+            setArm(-0.15, 0.022, Math.toRadians(260.5));//meio
             sleep(2000);
             openClaw();
             sleep(2000);
         }else if(analysis == 3){
             drive.followTrajectorySequence(toShippingHub);
-            setArm(-0.2, 0.28, Math.toRadians(260));//cima
+            setArm(-0.2, 0.28, Math.toRadians(250));//cima
             sleep(1500);
             openClaw();
             sleep(300);
@@ -211,7 +211,7 @@ public class AutoFC_B_Red_CUBE extends LinearOpMode {
          */
         drive.followTrajectorySequence(reverseArmazem);
         //colocar no mais alto
-        setArm(-0.2, 0.28, Math.toRadians(260));//cima
+        setArm(-0.2, 0.28, Math.toRadians(250));//cima
         sleep(1500);
         openClaw();
         sleep(300);
@@ -233,6 +233,7 @@ public class AutoFC_B_Red_CUBE extends LinearOpMode {
         TrajectoryVelocityConstraint slowSpd = (v, pose2d, pose2d1, pose2d2) -> 10;
 
         TrajectorySequence getCubeTraj = drive.trajectorySequenceBuilder(startingPose)
+                .turn(Math.toRadians(35))
                 .setVelConstraint(slowSpd)
                 .forward(30)
                 .build();
