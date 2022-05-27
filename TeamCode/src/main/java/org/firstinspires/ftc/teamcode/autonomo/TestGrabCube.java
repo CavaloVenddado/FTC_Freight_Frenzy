@@ -134,7 +134,7 @@ public class TestGrabCube extends LinearOpMode {
         motorCotovelo.setTargetPosition(0);
         motorOmbro.setTargetPosition(0);
         servoPulso.setPosition(0);
-        servoGarra.setPosition(0.8);
+        servoGarra.setPosition(0.6);
         //create constants
         TrajectoryVelocityConstraint slowSpd = (v, pose2d, pose2d1, pose2d2) -> 10;
 

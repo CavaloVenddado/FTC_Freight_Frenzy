@@ -33,7 +33,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -47,21 +46,21 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Cinematica_5;
 import org.firstinspires.ftc.teamcode.autonomo.visionpipelines.DetectorHSVEDGE;
-import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-@Autonomous(name="AutoFC_B_Red_CUBE", group="Auto")
-public class AutoFC_B_Red_CUBE extends LinearOpMode {
+@Autonomous(name="Carossel_A_Red", group="Auto")
+public class Carossel_A_Red extends LinearOpMode {
     OpenCvCamera camera;
     private DcMotorEx Carrossel = null;
     private DcMotorEx motorOmbro = null;
     private DcMotorEx motorCotovelo = null;
     private Servo servoPulso = null;
     private Servo servoGarra = null;
+    private Servo servobandeira = null;
     NormalizedColorSensor colorSensor;
     DistanceSensor distSensor;
     /*
@@ -93,7 +92,9 @@ public class AutoFC_B_Red_CUBE extends LinearOpMode {
 
         servoPulso = hardwareMap.get(Servo.class,"ServoPunho");
         servoGarra = hardwareMap.get(Servo.class,"ServoGarra");
+        servobandeira = hardwareMap.get(Servo.class,"ServoBandeira");
 
+        servobandeira.setPosition(0);
         servoPulso.setPosition(1);
         closeClaw();
 
@@ -126,37 +127,31 @@ public class AutoFC_B_Red_CUBE extends LinearOpMode {
         //init RR
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        final Pose2d startPose = new Pose2d(7,-62, Math.toRadians(90));
-        final Pose2d hubPose = new Pose2d(-12,-45, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(-41,-62, Math.toRadians(90));
+        final Pose2d hubPose = new Pose2d(-12,-47, Math.toRadians(90));
 
-        TrajectorySequence toShippingHub = drive.trajectorySequenceBuilder(startPose)
+        TrajectorySequence toCarossel = drive.trajectorySequenceBuilder(startPose)
+                .lineToLinearHeading(new Pose2d(-65,-55, Math.toRadians(90)))
+                .addTemporalMarker(() -> {Carrossel.setPower(-0.8);})
+                .waitSeconds(3)
+                .addTemporalMarker(() -> {Carrossel.setPower(0);})
+                .build();
+
+        TrajectorySequence toShippingHub = drive.trajectorySequenceBuilder(toCarossel.end())
                 .lineToLinearHeading(hubPose)
                 .build();
 
-        TrajectorySequence toArmazem = drive.trajectorySequenceBuilder(toShippingHub.end())
-                .lineToLinearHeading(new Pose2d(0, -63, Math.toRadians(0)))
-                //.strafeTo(new Vector2d(0,-62))
-                .strafeTo(new Vector2d(40,-64))
-                .build();
 
-        TrajectorySequence reverseArmazem = drive.trajectorySequenceBuilder(toArmazem.end())
-                .setReversed(true)
-                .lineToLinearHeading(new Pose2d(0,-64, Math.toRadians(0)))
-                //.strafeTo(new Vector2d(0,-50))
-                .setReversed(false)
-                .lineToLinearHeading(hubPose)
-                .build();
-
-        TrajectorySequence deliverLower = drive.trajectorySequenceBuilder(startPose)
+        TrajectorySequence deliverLower = drive.trajectorySequenceBuilder(toCarossel.end())
                 .lineToLinearHeading(new Pose2d(-12,-55, hubPose.getHeading()))
-                .addTemporalMarker(() -> {setArm(-0.2, -0.117, Math.toRadians(268));})//posição baixa
+                .addTemporalMarker(() -> {setArm(-0.078, -0.117, Math.toRadians(268));})//posição baixa
                 .waitSeconds(1)
                 .strafeTo(new Vector2d(hubPose.getX(),hubPose.getY()))
                 .build();
 
         TrajectorySequence vazar = drive.trajectorySequenceBuilder(toShippingHub.end())
-                .lineToLinearHeading(new Pose2d(0, -63, Math.toRadians(0)))
-                .strafeTo(new Vector2d(40,-63.5))
+                .lineToLinearHeading(new Pose2d(0, -65, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(40, -66, Math.toRadians(0)))
                 .build();
 
         while (!isStarted()){
@@ -178,6 +173,7 @@ public class AutoFC_B_Red_CUBE extends LinearOpMode {
         //start
         drive.setPoseEstimate(startPose);
         setArm(-0.137, 0.029, Math.toRadians(200));
+        drive.followTrajectorySequence(toCarossel);
         if(analysis == 1){
             drive.followTrajectorySequence(deliverLower);// special sequence for lower traj
             openClaw();
@@ -198,84 +194,8 @@ public class AutoFC_B_Red_CUBE extends LinearOpMode {
             sleep(500);
         }
         setArm(-0.137, 0.029, Math.toRadians(200));
-        //drive.followTrajectorySequence(toCarossel);
-        drive.followTrajectorySequence(toArmazem);
-
-        /*
-        agora ja entregamos na altura certa e estamos no armazém,
-        vamos pegar um cubo:
-         */
-        getACube(drive, toArmazem.end());
-        /*
-        pegamos e voltamos, agora dar de ré até a torre.
-         */
-        drive.followTrajectorySequence(reverseArmazem);
-        //colocar no mais alto
-        setArm(-0.2, 0.28, Math.toRadians(250));//cima
-        sleep(1500);
-        openClaw();
-        sleep(300);
-        setArm(0.1, 0.28, Math.toRadians(256));//cima pra tras
-        sleep(500);
-        //voltar pro armazém
-        setArm(-0.137, 0.029, Math.toRadians(200));
-        sleep(1000);
         drive.followTrajectorySequence(vazar);
         sleep(1000);
-    }
-
-    /**
-     * goes forward until detected a cube, then closes claw and goes back to param pose.
-     */
-    private void getACube(SampleMecanumDrive drive, Pose2d startingPose){
-        motorCotovelo.setTargetPosition(0);
-        motorOmbro.setTargetPosition(0);
-        servoPulso.setPosition(0);
-        servoGarra.setPosition(0.6);
-        //create constants
-        TrajectoryVelocityConstraint slowSpd = (v, pose2d, pose2d1, pose2d2) -> 10;
-
-        TrajectorySequence getCubeTraj = drive.trajectorySequenceBuilder(startingPose)
-                .turn(Math.toRadians(35))
-                .setVelConstraint(slowSpd)
-                .forward(30)
-                .build();
-
-
-        //grabs a cube
-        sleep(500);
-        drive.followTrajectorySequenceAsync(getCubeTraj);
-        while(drive.isBusy()){
-            drive.update();
-            double dist = distSensor.getDistance(DistanceUnit.CM);
-            telemetry.addData("buscando cubo", drive.isBusy());
-            telemetry.addData("distancia", dist);
-            telemetry.update();
-            if(isStopRequested()){
-                drive.breakFollowing();
-                return;
-            }
-            if((!Double.isNaN(dist)) && dist < 8){
-                break;
-            }
-        }
-        drive.breakFollowing();
-        drive.update();
-        closeClaw();
-        telemetry.addData("cubo encontrado!", "wow");
-        telemetry.update();
-        sleep(500);
-        setArm(-0.087, -0.021, Math.toRadians(222.3));
-        sleep(300);
-        setArm(-0.137, 0.029, Math.toRadians(200));
-        TrajectorySequence goBack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .resetVelConstraint()
-                .lineToLinearHeading(startingPose)
-                .build();
-
-        telemetry.addData("Voltando...", "será?");
-        telemetry.update();
-        drive.followTrajectorySequence(goBack);
     }
     void openClaw(){
         servoGarra.setPosition(1);

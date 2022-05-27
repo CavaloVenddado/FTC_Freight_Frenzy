@@ -232,7 +232,10 @@ public class AutoFC_B_Blue_CUBE extends LinearOpMode {
      * goes forward until detected a cube, then closes claw and goes back to param pose.
      */
     private void getACube(SampleMecanumDrive drive, Pose2d startingPose){
-        setArm(0.068, -0.03, Math.toRadians(323.76));
+        motorCotovelo.setTargetPosition(0);
+        motorOmbro.setTargetPosition(0);
+        servoPulso.setPosition(0);
+        servoGarra.setPosition(0.6);
         //create constants
         TrajectoryVelocityConstraint slowSpd = (v, pose2d, pose2d1, pose2d2) -> 10;
 
