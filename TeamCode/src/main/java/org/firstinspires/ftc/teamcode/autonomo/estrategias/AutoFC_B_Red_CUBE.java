@@ -156,7 +156,8 @@ public class AutoFC_B_Red_CUBE extends LinearOpMode {
 
         TrajectorySequence vazar = drive.trajectorySequenceBuilder(toShippingHub.end())
                 .lineToLinearHeading(new Pose2d(0, -63, Math.toRadians(0)))
-                .strafeTo(new Vector2d(40,-63.5))
+                .lineToLinearHeading(new Pose2d(40,-63.5, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(40,-40, Math.toRadians(0)))
                 .build();
 
         while (!isStarted()){
@@ -210,16 +211,21 @@ public class AutoFC_B_Red_CUBE extends LinearOpMode {
         pegamos e voltamos, agora dar de ré até a torre.
          */
         drive.followTrajectorySequence(reverseArmazem);
-        //colocar no mais alto
-        setArm(-0.2, 0.28, Math.toRadians(250));//cima
-        sleep(1500);
-        openClaw();
-        sleep(300);
-        setArm(0.1, 0.28, Math.toRadians(256));//cima pra tras
-        sleep(500);
-        //voltar pro armazém
-        setArm(-0.137, 0.029, Math.toRadians(200));
-        sleep(1000);
+        if(Math.abs(drive.getLastError().getX()) < 15 && Math.abs(drive.getLastError().getY()) < 15){
+            //colocar no mais alto
+            setArm(-0.2, 0.28, Math.toRadians(250));//cima
+            sleep(1500);
+            openClaw();
+            sleep(300);
+            setArm(0.1, 0.28, Math.toRadians(256));//cima pra tras
+            sleep(500);
+            //voltar pro armazém
+            setArm(-0.137, 0.029, Math.toRadians(200));
+            sleep(1000);
+        }else{
+            openClaw();
+            servoPulso.setPosition(1);
+        }
         drive.followTrajectorySequence(vazar);
         sleep(1000);
     }
@@ -236,7 +242,7 @@ public class AutoFC_B_Red_CUBE extends LinearOpMode {
         TrajectoryVelocityConstraint slowSpd = (v, pose2d, pose2d1, pose2d2) -> 10;
 
         TrajectorySequence getCubeTraj = drive.trajectorySequenceBuilder(startingPose)
-                .turn(Math.toRadians(35))
+                //.turn(Math.toRadians(35))
                 .setVelConstraint(slowSpd)
                 .forward(30)
                 .build();

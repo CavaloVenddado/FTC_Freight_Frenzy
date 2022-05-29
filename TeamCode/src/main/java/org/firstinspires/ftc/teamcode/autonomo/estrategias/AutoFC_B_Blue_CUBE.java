@@ -129,7 +129,7 @@ public class AutoFC_B_Blue_CUBE extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         Pose2d startPose = new Pose2d(15,62, Math.toRadians(270));
-        final Pose2d hubPose = new Pose2d(-12,45, Math.toRadians(270));
+        final Pose2d hubPose = new Pose2d(-12,47, Math.toRadians(270));
 
         TrajectorySequence toShippingHub = drive.trajectorySequenceBuilder(startPose)
                 .lineToLinearHeading(hubPose)
@@ -152,14 +152,15 @@ public class AutoFC_B_Blue_CUBE extends LinearOpMode {
 
         TrajectorySequence deliverLower = drive.trajectorySequenceBuilder(startPose)
                 .lineToLinearHeading(new Pose2d(-12,55, hubPose.getHeading()))
-                .addTemporalMarker(() -> {setArm(-0.078, -0.117, Math.toRadians(268));})//posição baixa
+                .addTemporalMarker(() -> {setArm(-0.13, -0.13, Math.toRadians(268));})//posição baixa
                 .waitSeconds(1)
-                .strafeTo(new Vector2d(hubPose.getX(),hubPose.getY()))
+                .lineToLinearHeading(hubPose)
                 .build();
 
         TrajectorySequence vazar = drive.trajectorySequenceBuilder(toShippingHub.end())
                 .lineToLinearHeading(new Pose2d(0, 64, Math.toRadians(0)))
                 .lineToLinearHeading(new Pose2d(40, 65, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(40,40, Math.toRadians(0)))
                 .build();
 
         while (!isStarted()){
@@ -213,17 +214,22 @@ public class AutoFC_B_Blue_CUBE extends LinearOpMode {
         pegamos e voltamos, agora dar de ré até a torre.
          */
         drive.followTrajectorySequence(reverseArmazem);
-        //colocar no mais alto
-        setArm(-0.2, 0.28, Math.toRadians(250));//cima
-        sleep(1700);
-        servobandeira.setPosition(0);
-        openClaw();
-        sleep(300);
-        setArm(0.1, 0.28, Math.toRadians(256));//cima
-        sleep(500);
-        //voltar pro armazém
-        setArm(-0.137, 0.029, Math.toRadians(200));
-        sleep(1000);
+        if(Math.abs(drive.getLastError().getX()) < 15 && Math.abs(drive.getLastError().getY()) < 15) {
+            //colocar no mais alto
+            setArm(-0.2, 0.28, Math.toRadians(250));//cima
+            sleep(1700);
+            servobandeira.setPosition(0);
+            openClaw();
+            sleep(300);
+            setArm(0.1, 0.28, Math.toRadians(256));//cima
+            sleep(500);
+            //voltar pro armazém
+            setArm(-0.137, 0.029, Math.toRadians(200));
+            sleep(1000);
+        }else{
+            openClaw();
+            servoPulso.setPosition(1);
+        }
         drive.followTrajectorySequence(vazar);
         sleep(1000);
     }
@@ -240,7 +246,6 @@ public class AutoFC_B_Blue_CUBE extends LinearOpMode {
         TrajectoryVelocityConstraint slowSpd = (v, pose2d, pose2d1, pose2d2) -> 10;
 
         TrajectorySequence getCubeTraj = drive.trajectorySequenceBuilder(startingPose)
-                .turn(Math.toRadians(-35))
                 .setVelConstraint(slowSpd)
                 .forward(30)
                 .build();
